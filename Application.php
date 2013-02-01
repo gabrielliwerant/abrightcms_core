@@ -199,7 +199,6 @@ class Application
 		}	
 		else
 		{
-			// Scan the controllers directory for all valid files
 			$controllers_arr = scandir(CONTROLLER_PATH, 1);
 
 			$is_controller = false;
@@ -233,7 +232,7 @@ class Application
 	/**
 	 * Find controller name from the object name and return it.
 	 * 
-	 * @return string The controller name
+	 * @return string
 	 */
 	private function _getControllerName()
 	{
@@ -246,7 +245,7 @@ class Application
 	 * page.
 	 * 
 	 * @param object $controller Used to check for existing methods
-	 * @param string $method Possible secondary URL value (method)
+	 * @param string $method
 	 * 
 	 * @return object Application
 	 */
