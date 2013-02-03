@@ -15,7 +15,7 @@
  * 
  * We use this with spl_autoload_register to load our class files.
  * 
- * @subpackage lib
+ * @subpackage system/core
  * @author Gabriel Liwerant
  */
 class Loader
@@ -81,4 +81,4 @@ class Loader
 }
 // End of Loader Class
 
-/* EOF lib/Loader.php */
+/* EOF system/core/Loader.php */

@@ -16,7 +16,7 @@
  * Acts as front controller which we use to find other controllers and run the 
  * application.
  * 
- * @subpackage lib
+ * @subpackage system/core
  * @author Gabriel Liwerant
  */
 class Application
@@ -346,4 +346,4 @@ class Application
 }
 // End of Application Class
 
-/* EOF lib/Application.php */
+/* EOF system/core/Application.php */

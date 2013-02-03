@@ -16,7 +16,7 @@
  * This class allows us to report errors, record errors, and send users to a 
  * friendly error page. Intended for use with register_shutdown_function.
  * 
- * @subpackage lib
+ * @subpackage system/core
  * @author Gabriel Liwerant
  */
 class ErrorHandler
@@ -145,4 +145,4 @@ class ErrorHandler
 }
 // End of ErrorHandler Class
 
-/* EOF lib/ErrorHandler.php */
+/* EOF system/core/ErrorHandler.php */

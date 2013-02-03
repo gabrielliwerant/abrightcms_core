@@ -13,10 +13,11 @@
 /**
  * View Class
  * 
- * Contains the methods necessary to build and render the standard pieces of the
- * template. They are stored as strings to be echoed in the view pages.
+ * Base view for application.
  * 
- * @subpackage lib
+ * Renders the standard template pages.
+ * 
+ * @subpackage system/core
  * @author Gabriel Liwerant
  */
 class View
@@ -213,10 +214,10 @@ class View
 	 * @param string $text Text for anchor tag display
 	 * @param string $path Used to build the href attribute
 	 * @param boolean $is_internal If href is local or remote
-	 * @param string $target Anchor tag target element
-	 * @param string $title Anchor tag title element
-	 * @param string $class Anchor tag class
-	 * @param string $id Anchor tag id
+	 * @param string $target
+	 * @param string $title
+	 * @param string $class
+	 * @param string $id
 	 * 
 	 * @return string Built HTML anchor tag
 	 */

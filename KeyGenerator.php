@@ -13,12 +13,10 @@
 /**
  * KeyGenerator Class
  * 
- * Houses methods to generate key values.
- * 
  * We can generate a key from some standard key strings stored in a property or
  * we can generate a key from a passed key string argument.
  * 
- * @subpackage lib
+ * @subpackage system/core
  * @author Gabriel Liwerant
  */
 class KeyGenerator
@@ -148,4 +146,4 @@ class KeyGenerator
 }
 // End of KeyGenerator Class
 
-/* EOF lib/KeyGenerator.php */
+/* EOF system/core/KeyGenerator.php */

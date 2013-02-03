@@ -13,7 +13,7 @@
 /**
  * MyException Class
  * 
- * @subpackage lib
+ * @subpackage system/core
  * @author Gabriel Liwerant
  * 
  * @uses Exception
@@ -126,4 +126,4 @@ class MyException extends Exception
 }
 // End of MyException Class
 
-/* EOF lib/MyException.php */
+/* EOF system/core/MyException.php */

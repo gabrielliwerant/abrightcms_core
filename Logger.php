@@ -13,7 +13,7 @@
 /**
  * Log Class
  * 
- * @subpackage lib
+ * @subpackage system/core
  * @author Gabriel Liwerant
  */
 class Logger
@@ -90,4 +90,4 @@ class Logger
 }
 // End of Log Class
 
-/* EOF lib/Log.php */
+/* EOF system/core/Log.php */

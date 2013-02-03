@@ -13,7 +13,7 @@
 /**
  * ApplicationFactory Class
  * 
- * @subpackage
+ * @subpackage system/core
  * @author Gabriel Liwerant
  */
 class ApplicationFactory
@@ -66,6 +66,7 @@ class ApplicationFactory
 	 * Make sure to capitalize correctly to match class name.
 	 *
 	 * @param string $storage_type
+	 * 
 	 * @return object ApplicationFactory 
 	 */
 	private function _setStorageType($storage_type)
@@ -98,16 +99,16 @@ class ApplicationFactory
 	 * @param string $controller_name Allows us to make the correct model
 	 * @param string $storage_type Type of storage object to make for model
 	 * 
-	 * @return object model_name The model object for the controller
+	 * @return object
 	 */
 	private function _makeModel($controller_name, $storage_type)
 	{
-		$model_name	= $controller_name . 'Model';
+		$model		= $controller_name . 'Model';
 				
 		$storage	= $this->_makeTemplateStorage($storage_type);
 		$log		= $this->makeLogger();		
 		
-		return new $model_name($storage, $storage_type, $log);
+		return new $model($storage, $storage_type, $log);
 	}
 	
 	/**
@@ -115,13 +116,13 @@ class ApplicationFactory
 	 * 
 	 * @param string $controller_name Allows us to make the correct view
 	 * 
-	 * @return object view_name The view object for the controller
+	 * @return object
 	 */
 	private function _makeView($controller_name)
 	{
-		$view_name = $controller_name . 'View';
+		$view = $controller_name . 'View';
 
-		return new $view_name();
+		return new $view();
 	}
 	
 	/**
@@ -146,4 +147,4 @@ class ApplicationFactory
 }
 // End of ApplicationFactory Class
 
-/* EOF lib/ApplicationFactory.php */
+/* EOF system/core/ApplicationFactory.php */

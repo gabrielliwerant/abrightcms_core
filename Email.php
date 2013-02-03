@@ -13,7 +13,7 @@
 /**
  * Email Class
  * 
- * @subpackage lib
+ * @subpackage system/core
  * @author Gabriel Liwerant
  */
 class Email
@@ -209,4 +209,4 @@ class Email
 }
 // End of Email Class
 
-/* EOF lib/Email.php */
+/* EOF system/core/Email.php */
