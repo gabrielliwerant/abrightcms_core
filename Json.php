@@ -16,7 +16,7 @@
  * Contains the methods and properties necessary to load JSON data into the 
  * program and then provide a means to access it.
  * 
- * @subpackage lib
+ * @subpackage system/core
  * @author Gabriel Liwerant
  */
 class Json
@@ -177,7 +177,7 @@ class Json
 	}
 	
 	/**
-	 * Returns a JSON file as an array from our property.
+	 * Get a JSON file as an array from our property.
 	 * 
 	 * @param string $json_key Is the name of the JSON file
 	 * 
@@ -189,9 +189,9 @@ class Json
 	}
 	
 	/**
-	 * Returns all JSON files as an array of arrays.
+	 * Get all JSON files as an array of arrays.
 	 *
-	 * @return array Entire array of arrays of JSON data
+	 * @return array
 	 */
 	public function getAllDataAsArray()
 	{
@@ -228,4 +228,4 @@ class Json
 }
 // End of Json Class
 
-/* EOF lib/Json.php */
+/* EOF system/core/Json.php */

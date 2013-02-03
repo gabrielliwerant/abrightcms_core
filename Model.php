@@ -13,10 +13,9 @@
 /**
  * Model Class
  * 
- * We use this class to set our database connection for later use and to inject
- * dependencies as well as storing data from json files for later retrieval.
+ * Base model for entire application.
  * 
- * @subpackage lib
+ * @subpackage system/core
  * @author Gabriel Liwerant
  */
 class Model
@@ -276,4 +275,4 @@ class Model
 }
 // End of Model Class
 
-/* EOF lib/Model.php */
+/* EOF system/core/Model.php */

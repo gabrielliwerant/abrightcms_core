@@ -15,10 +15,9 @@
  * 
  * Base controller for the entire application.
  * 
- * Create a new model and send it the data from json files required to load 
- * default conditions. Then we can render a default page.
+ * Holds instance of model and view.
  * 
- * @subpackage lib
+ * @subpackage system/core
  * @author Gabriel Liwerant
  */
 Class Controller
@@ -105,9 +104,13 @@ Class Controller
     {
         $this->_view->meta = null;
         
-        foreach ($head_meta as $type => $value)
+        foreach ($head_meta as $content_type => $content_data)
         {
-            $this->_view->meta .= $this->_view->buildHeadMeta($type, $value);
+            foreach($content_data as $type => $value)
+			{
+				$meta_content		= $content_type . '=' . $type;
+				$this->_view->meta	.= $this->_view->buildHeadMeta($meta_content, $value);
+			}
         }
 		
 		return $this;
@@ -220,7 +223,7 @@ Class Controller
 	/**
 	 * Allows us to force re-caching on included files like CSS and JS.
 	 *
-	 * @param boolean $is_mode_cache_busting Whether or not to add re-cache value
+	 * @param boolean $is_mode_cache_busting
 	 * @param string $preexisting_value Any preexisting re-cache value to use
 	 * 
 	 * @return string The re-cache string to append to files
@@ -260,7 +263,7 @@ Class Controller
     {
         $this->_view->header_nav	= null;
 		$i							= 1;        
-		
+
 		foreach ($header_nav_data as $nav => $data)
         {
             if ($i === 1)
@@ -335,6 +338,7 @@ Class Controller
 	 * Site name view property setter
 	 *
 	 * @param string $site_name
+	 * 
 	 * @return object Controller 
 	 */
 	protected function _setSiteName($site_name)
@@ -348,6 +352,7 @@ Class Controller
 	 * Tagline view property setter
 	 *
 	 * @param string $tagline
+	 * 
 	 * @return object Controller 
 	 */
 	protected function _setTagline($tagline)
@@ -358,10 +363,27 @@ Class Controller
 	}
 	
 	/**
+	 * Get built copyright from view.
+	 *
+	 * @param array $copyright_data
+	 * @param string $separator Optional separator
+	 * @param boolean $show_current_date
+	 * 
+	 * @return string HTML copyright information 
+	 */
+	protected function _getCopyright($copyright_data, $separator = null, $show_current_date = true)
+	{
+		return $this->_view->buildCopyright($copyright_data, $separator, $show_current_date);
+	}
+	
+	/**
 	 * Set the view property for the rendering of the footer navigation.
 	 *
 	 * @param array $footer_nav_data Name and other information for footer nav
 	 * @param string $separator Optional separator in HTML for nav items
+	 * 
+	 * @todo separate copyright building from the rest of footer nav, which will
+	 *		require some refactoring of the json template as well.
 	 * 
 	 * @return object Controller
 	 */
@@ -374,15 +396,14 @@ Class Controller
 		{
 			if ($nav === 'copyright')
 			{
-				$this->_view->footer_nav .= $this->
-					_view->buildCopyright($data, $separator, true);
+				$this->_view->footer_nav .= $this->_getCopyright($data, $separator, true);
 			}
 			else
 			{
 				if ((boolean)$data['is_anchor'])
 				{
 					$nav = $this->_view->buildAnchorTag(
-						$nav, 
+						$data['text'], 
 						$path, 
 						$is_internal, 
 						$target,
@@ -397,7 +418,7 @@ Class Controller
 				}
 				
 				$this->_view->footer_nav .= $this->_view->buildNav(
-					$nav, 
+					$data['text'], 
 					null, 
 					$separator
 				);
@@ -447,4 +468,4 @@ Class Controller
 }
 // End of Controller Class
 
-/* EOF lib/Controller.php */
+/* EOF system/core/Controller.php */
