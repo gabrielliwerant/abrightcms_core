@@ -50,7 +50,7 @@ class Json
 	 * @param boolean $make_assoc_arr Return as associative array or not
 	 * @param integer $depth How many nested layers deep to search
 	 * 
-	 * @return array/obj Decoded JSON contents in format chosen
+	 * @return mixed Decoded JSON contents in format chosen
 	 */
 	public function getJsonDecode(
 		$json_encoded, 
@@ -106,7 +106,7 @@ class Json
 	/**
 	 * Handles JSON encoding.
 	 *
-	 * @param string, array, integer $value Contents to be encoded as JSON
+	 * @param mixed $value Contents to be encoded as JSON
 	 * 
 	 * @return string Encoded JSON contents
 	 */
