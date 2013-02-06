@@ -110,7 +110,7 @@ class Json
 	 * 
 	 * @return string Encoded JSON contents
 	 */
-	public function getJsonEncode($value)
+	public function getEncodedDataAsString($value)
 	{
 		if (PHP_VERSION < 5.3)
 		{

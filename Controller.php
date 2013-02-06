@@ -416,7 +416,7 @@ Class Controller
 				{
 					$separator = null;
 				}
-				
+
 				$this->_view->footer_nav .= $this->_view->buildNav(
 					$data['text'], 
 					null, 

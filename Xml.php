@@ -94,7 +94,7 @@ class Xml
 		if ($xml instanceof SimpleXMLElement)
 		{
 			$children	= $xml->children();			
-			//$xml_arr	= null;
+			//$xml_arr	= null; // Is there a way we can end without an initialized array?
 		}
 		else
 		{
@@ -158,6 +158,16 @@ class Xml
 		}
 
 		return $this->convertSimpleXmlElementToArray($xml);
+	}
+	
+	/**
+	 * Placeholder until we have a working method. For now, use Json if this 
+	 * functionality is required.
+	 */
+	public function getEncodedDataAsString()
+	{
+		throw ApplicationFactory::makeException('Xml Exception: ' . __METHOD__ . ' not yet built.');
+		//throw new Exception('Xml Exception: ' . __METHOD__ . ' not yet built.');
 	}
 	
 	/**
