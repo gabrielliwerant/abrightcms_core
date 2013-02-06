@@ -314,7 +314,7 @@ Class Controller
 	protected function _setLogoInAnchorTag($prefix, $branding_data)
 	{
 		$output_name = $prefix . 'logo';
-		
+
 		$logo = $this->_view->buildBrandingLogo(
 			$branding_data['logo']['src'],
 			$branding_data['logo']['alt'],
@@ -459,7 +459,6 @@ Class Controller
 	 * template pages.
 	 *  
 	 * @param string $page_name Name of the page we load as the view
-	 * @param array $data For building page views from template storage
 	 */
 	public function render($page_name)
 	{

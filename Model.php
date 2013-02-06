@@ -28,14 +28,21 @@ class Model
 	protected $_storage;
 	
 	/**
-	 * Holds an instance of the log object.
+	 * Holds an instance of the Logger object.
 	 *
-	 * @var object $_logger
+	 * @var object $_logger 
 	 */
 	protected $_logger;
 	
 	/**
-	 * Holds an instance of the key generator class.
+	 * Holds an instance of the Database object.
+	 *
+	 * @var object $_db
+	 */
+	protected $_db;
+	
+	/**
+	 * Holds an instance of the KeyGenerator object.
 	 *
 	 * @var object $key_gen
 	 */
@@ -48,10 +55,11 @@ class Model
 	 * @param object $storage_obj Data storage object
 	 * @param string $storage_type The way data is stored and retrieved
 	 * @param object $logger_obj
+	 * @param object $db
 	 */
-	public function __construct($storage_obj, $storage_type, $logger_obj)
+	public function __construct($storage_obj, $storage_type, $logger_obj, $db = null)
 	{
-		$this->_setStorageObject($storage_obj)->_setLogger($logger_obj);
+		$this->_setStorageObject($storage_obj)->_setLogger($logger_obj)->_setDatabase($db);
 
 		switch (strtolower($storage_type))
 		{
@@ -95,7 +103,7 @@ class Model
 	}
 
 	/**
-	 * Setter for Log object
+	 * Setter for Logger object
 	 *
 	 * @param object $logger_obj
 	 * 
@@ -104,6 +112,20 @@ class Model
 	private function _setLogger($logger_obj)
 	{
 		$this->_logger = $logger_obj;
+		
+		return $this;
+	}
+	
+	/**
+	 * Setter for Database object
+	 *
+	 * @param object $db
+	 * 
+	 * @return object Model 
+	 */
+	private function _setDatabase($db)
+	{
+		$this->_db = $db;
 		
 		return $this;
 	}
@@ -188,6 +210,31 @@ class Model
 	public function getAllDataFromStorage()
 	{
 		return $this->_storage->getAllDataAsArray();
+	}
+	
+	/**
+	 *
+	 * @param type $string
+	 * 
+	 * @todo must generalize encoding function names, or this method lies
+	 * 
+	 * @return type 
+	 */
+	public function getEncodedStringInStorageFormat($string)
+	{
+		return $this->_storage->getEncodedDataAsString($string);
+	}
+	
+	/**
+	 * Convert string from encoded data to boolean using our storage object.
+	 *
+	 * @param string $psuedo_boolean
+	 * 
+	 * @return boolean 
+	 */
+	public function getStringValueAsBoolean($psuedo_boolean)
+	{
+		return $this->_storage->getStringValueAsBoolean($psuedo_boolean);
 	}
 	
 	/**
