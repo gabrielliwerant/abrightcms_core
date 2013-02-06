@@ -459,7 +459,6 @@ Class Controller
 	 * template pages.
 	 *  
 	 * @param string $page_name Name of the page we load as the view
-	 * @param array $data For building page views from template storage
 	 */
 	public function render($page_name)
 	{
