@@ -26,13 +26,22 @@ class ApplicationFactory
 	private $_storage_type;
 
 	/**
+	 * Tells us whether or not we should create a Database object during model
+	 * creation.
+	 *
+	 * @var boolean $_has_database 
+	 */
+	private $_has_database;
+	
+	/**
 	 * Set storage type for model upon construction.
 	 *
-	 * @param type $storage_type 
+	 * @param string $storage_type 
+	 * @param boolean $has_database
 	 */
-	public function __construct($storage_type)
+	public function __construct($storage_type, $has_database)
 	{
-		$this->_setStorageType($storage_type);
+		$this->_setStorageType($storage_type)->_setHasDatabaseValue($has_database);
 	}
 	
 	/**
@@ -78,7 +87,39 @@ class ApplicationFactory
 		
 		return $this;
 	}
-
+	
+	/**
+	 * Setter for has database value
+	 *
+	 * @param boolean $has_database
+	 * 
+	 * @return object ApplicationFactory 
+	 */
+	private function _setHasDatabaseValue($has_database)
+	{
+		$this->_has_database = $has_database;
+		
+		return $this;
+	}
+	
+	/**
+	 * Database factory
+	 * 
+	 * @todo move has_database check to model creation
+	 * @return object Database 
+	 */
+	private function _makeDatabase()
+	{
+		if ($this->_has_database)
+		{
+			return new Database();
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
 	/**
 	 * Factory for the storage type our model uses for retrieving template data.
 	 *
@@ -106,9 +147,10 @@ class ApplicationFactory
 		$model		= $controller_name . 'Model';
 				
 		$storage	= $this->_makeTemplateStorage($storage_type);
-		$log		= $this->makeLogger();		
+		$log		= $this->makeLogger();
+		$db			= $this->_makeDatabase();
 		
-		return new $model($storage, $storage_type, $log);
+		return new $model($storage, $storage_type, $log, $db);
 	}
 	
 	/**

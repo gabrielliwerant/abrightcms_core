@@ -416,7 +416,7 @@ Class Controller
 				{
 					$separator = null;
 				}
-				
+
 				$this->_view->footer_nav .= $this->_view->buildNav(
 					$data['text'], 
 					null, 
@@ -459,7 +459,6 @@ Class Controller
 	 * template pages.
 	 *  
 	 * @param string $page_name Name of the page we load as the view
-	 * @param array $data For building page views from template storage
 	 */
 	public function render($page_name)
 	{
