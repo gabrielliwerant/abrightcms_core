@@ -391,6 +391,32 @@ Class Controller
 	}
 	
 	/**
+	 * Sets the view property for a link list column.
+	 *
+	 * @param array $link_data
+	 * @param integer $max_columns Maximum number of link columns to make
+	 * 
+	 * @return object Controller
+	 */
+	protected function _setLinkListColumn($link_data, $max_columns)
+	{
+		$i = 0;
+		$this->_view->link_section = null;
+
+		foreach ($link_data as $list_name => $list_data )
+		{
+			$i++;
+
+			if ($i <= $max_columns)
+			{
+				$this->_view->link_section .= $this->_view->buildLinkListColumn($list_name, $list_data);
+			}
+		}
+		
+		return $this;
+	}
+	
+	/**
 	 * Generic setter for view properties
 	 *
 	 * @param string $property Name of property to set in view
