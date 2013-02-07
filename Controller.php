@@ -360,7 +360,7 @@ Class Controller
 			{
 				if ((boolean)$data['is_anchor'])
 				{
-					$nav = $this->_view->buildAnchorTag(
+					$nav_item = $this->_view->buildAnchorTag(
 						$data['text'], 
 						$data['path'], 
 						$data['is_internal'], 
@@ -370,6 +370,10 @@ Class Controller
 						$data['id']
 					);
 				}
+				else
+				{
+					$nav_item = $data['text'];
+				}
 				
 				// If we use a separator, make the last one null
 				if ($i === count($footer_nav_data))
@@ -378,7 +382,7 @@ Class Controller
 				}
 
 				$this->_view->footer_nav .= $this->_view->buildNav(
-					$data['text'], 
+					$nav_item, 
 					null, 
 					$separator
 				);
