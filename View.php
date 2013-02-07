@@ -222,7 +222,7 @@ class View
 		
 		foreach ($list_data as $text => $path)
 		{
-			$list_items .= '<li>' . $this->buildAnchorTag($text, $path, true) . '</li>';
+			$list_items .= '<li>' . $this->buildAnchorTag($text, $path, false) . '</li>';
 		}
 		
 		$list = '<div class="link-column"><p>' . $list_name . '</p><ul>' . $list_items . '</ul></div>';
