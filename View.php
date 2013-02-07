@@ -209,6 +209,28 @@ class View
 	}
 	
 	/**
+	 * Build an HTML link list column for display.
+	 *
+	 * @param string $list_name Name of the link list
+	 * @param array $list_data Data to build the links in the list
+	 * 
+	 * @return string
+	 */
+	public function buildLinkListColumn($list_name, $list_data)
+	{
+		$list_items = null;
+		
+		foreach ($list_data as $text => $path)
+		{
+			$list_items .= '<li>' . $this->buildAnchorTag($text, $path, true) . '</li>';
+		}
+		
+		$list = '<div class="link-column"><p>' . $list_name . '</p><ul>' . $list_items . '</ul></div>';
+		
+		return $list;
+	}
+	
+	/**
 	 * Build an HTML anchor tag.
 	 *
 	 * @param string $text Text for anchor tag display

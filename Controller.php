@@ -192,20 +192,6 @@ Class Controller
     }
     
 	/**
-	 * Page name view property setter
-	 *
-	 * @param string $page_name 
-	 * 
-	 * @return object Controller
-	 */
-	private function _setPage($page_name)
-	{
-		$this->_view->page = $page_name;
-		
-		return $this;
-	}
-
-	/**
 	 * Setter for the title page view property
 	 *
 	 * @param array $title_page_arr Map of pages with titles
@@ -335,34 +321,6 @@ Class Controller
 	}
     
 	/**
-	 * Site name view property setter
-	 *
-	 * @param string $site_name
-	 * 
-	 * @return object Controller 
-	 */
-	protected function _setSiteName($site_name)
-	{
-		$this->_view->site_name = $site_name;
-		
-		return $this;
-	}
-	
-	/**
-	 * Tagline view property setter
-	 *
-	 * @param string $tagline
-	 * 
-	 * @return object Controller 
-	 */
-	protected function _setTagline($tagline)
-	{
-		$this->_view->tagline = $tagline;
-		
-		return $this;
-	}
-	
-	/**
 	 * Get built copyright from view.
 	 *
 	 * @param array $copyright_data
@@ -404,10 +362,12 @@ Class Controller
 				{
 					$nav = $this->_view->buildAnchorTag(
 						$data['text'], 
-						$path, 
-						$is_internal, 
-						$target,
-						$title
+						$data['path'], 
+						$data['is_internal'], 
+						$data['target'],
+						$data['title'],
+						$data['class'],
+						$data['id']
 					);
 				}
 				
@@ -426,6 +386,47 @@ Class Controller
 			
 			$i++;
 		}
+		
+		return $this;
+	}
+	
+	/**
+	 * Sets the view property for a link list column.
+	 *
+	 * @param array $link_data
+	 * @param integer $max_columns Maximum number of link columns to make
+	 * 
+	 * @return object Controller
+	 */
+	protected function _setLinkListColumn($link_data, $max_columns)
+	{
+		$i = 0;
+		$this->_view->link_section = null;
+
+		foreach ($link_data as $list_name => $list_data )
+		{
+			$i++;
+
+			if ($i <= $max_columns)
+			{
+				$this->_view->link_section .= $this->_view->buildLinkListColumn($list_name, $list_data);
+			}
+		}
+		
+		return $this;
+	}
+	
+	/**
+	 * Generic setter for view properties
+	 *
+	 * @param string $property Name of property to set in view
+	 * @param string $data
+	 * 
+	 * @return object Controller 
+	 */
+	protected function _setViewProperty($property, $data)
+	{
+		$this->_view->$property = $data;
 		
 		return $this;
 	}
@@ -462,7 +463,7 @@ Class Controller
 	 */
 	public function render($page_name)
 	{
-		$this->_setPage($page_name)->_view->renderPage($page_name);
+		$this->_setViewProperty('page', $page_name)->_view->renderPage($page_name);
 	}
 }
 // End of Controller Class
