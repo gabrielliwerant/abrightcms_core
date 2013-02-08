@@ -238,25 +238,26 @@ Class Controller
 	}
 	
     /**
-     * Set the view property for the rendering of the header navigation.
+     * Set the view property for the rendering of the navigation.
      * 
-     * @param array $header_nav_data Name and other information for header nav
+	 * @param string $nav_property
+     * @param array $nav_data Name and other information for the nav
 	 * @param string $separator Optional separator in HTML for nav items
 	 * 
 	 * @return object Controller
      */
-    protected function _setHeaderNav($header_nav_data, $separator = null)
+    protected function _setNav($nav_property, $nav_data, $separator = null)
     {
-        $this->_view->header_nav	= null;
+        $this->_view->$nav_property	= null;
 		$i							= 1;        
 
-		foreach ($header_nav_data as $nav => $data)
+		foreach ($nav_data as $nav => $data)
         {
             if ($i === 1)
 			{
 				$list_class = 'first';
 			}			
-			elseif ($i === count($header_nav_data))
+			elseif ($i === count($nav_data))
 			{
 				$list_class = 'last';
 				$separator	= null;
@@ -268,17 +269,21 @@ Class Controller
 			
 			if ((boolean)$data['is_anchor'])
 			{			
-				$nav = $this->_view->buildAnchorTag(
-					$nav,
+				$nav_item = $this->_view->buildAnchorTag(
+					$data['text'],
 					$data['path'], 
 					$data['is_internal'], 
 					$data['target'],
 					$data['title']
 				);
 			}
+			else
+			{
+				$nav_item = $data['text'];
+			}
 			
-			$this->_view->header_nav .=  $this->_view->buildNav(
-				$nav, 
+			$this->_view->$nav_property .=  $this->_view->buildNav(
+				$nav_item, 
 				$list_class, 
 				$separator
 			);
@@ -319,73 +324,39 @@ Class Controller
 		
 		return $this;
 	}
-    
-	/**
-	 * Get built copyright from view.
-	 *
-	 * @param array $copyright_data
-	 * @param string $separator Optional separator
-	 * @param boolean $show_current_date
-	 * 
-	 * @return string HTML copyright information 
-	 */
-	protected function _getCopyright($copyright_data, $separator = null, $show_current_date = true)
-	{
-		return $this->_view->buildCopyright($copyright_data, $separator, $show_current_date);
-	}
 	
 	/**
-	 * Set the view property for the rendering of the footer navigation.
+	 * Set the view property for the rendering of the fine print.
 	 *
-	 * @param array $footer_nav_data Name and other information for footer nav
+	 * @param array $fine_print_data Name and other information for footer nav
 	 * @param string $separator Optional separator in HTML for nav items
-	 * 
-	 * @todo separate copyright building from the rest of footer nav, which will
-	 *		require some refactoring of the json template as well.
 	 * 
 	 * @return object Controller
 	 */
-	protected function _setFooterNav($footer_nav_data, $separator = null)
+	protected function _setFinePrint($fine_print_data, $separator = null)
 	{
-		$this->_view->footer_nav	= null;		
+		$this->_view->fine_print	= null;		
 		$i							= 1;
 		
-		foreach ($footer_nav_data as $nav => $data)
+		foreach ($fine_print_data as $nav => $data)
 		{
 			if ($nav === 'copyright')
 			{
-				$this->_view->footer_nav .= $this->_getCopyright($data, $separator, true);
+				$this->_view->fine_print .= $this->_view->buildCopyright(
+					$data, 
+					$separator, 
+					(boolean)$data['show_current_date']
+				);
 			}
 			else
-			{
-				if ((boolean)$data['is_anchor'])
-				{
-					$nav_item = $this->_view->buildAnchorTag(
-						$data['text'], 
-						$data['path'], 
-						$data['is_internal'], 
-						$data['target'],
-						$data['title'],
-						$data['class'],
-						$data['id']
-					);
-				}
-				else
-				{
-					$nav_item = $data['text'];
-				}
-				
+			{				
 				// If we use a separator, make the last one null
-				if ($i === count($footer_nav_data))
+				if ($i === count($fine_print_data))
 				{
 					$separator = null;
 				}
-
-				$this->_view->footer_nav .= $this->_view->buildNav(
-					$nav_item, 
-					null, 
-					$separator
-				);
+				
+				$this->_view->fine_print .= $this->_view->buildNav($data, null, $separator);
 			}
 			
 			$i++;
