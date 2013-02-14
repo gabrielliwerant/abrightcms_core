@@ -104,30 +104,32 @@ class Xml
 
 		foreach ($children as $key => $value)
 		{
-			if ($value instanceof SimpleXMLElement)
+			if ( ! $value instanceof SimpleXMLElement)
 			{
-				$values = (array)$value->children();
+				continue;
+			}
+			
+			$values = (array)$value->children();
 
-				if (count($values) > 0)
+			if (count($values) > 0)
+			{
+				$xml_arr[$key] = $this->convertSimpleXmlElementToArray($value);
+			}
+			else
+			{
+				if ( ! isset($xml_arr[$key]))
 				{
-					$xml_arr[$key] = $this->convertSimpleXmlElementToArray($value);
+					$xml_arr[$key] = (string)$value;
 				}
 				else
 				{
-					if ( ! isset($xml_arr[$key]))
+					if ( ! is_array($xml_arr[$key]))
 					{
-						$xml_arr[$key] = (string)$value;
+						$xml_arr[$key] = array($xml_arr[$key], (string)$value);
 					}
 					else
 					{
-						if ( ! is_array($xml_arr[$key]))
-						{
-							$xml_arr[$key] = array($xml_arr[$key], (string)$value);
-						}
-						else
-						{
-							$xml_arr[$key][] = (string)$value;
-						}
+						$xml_arr[$key][] = (string)$value;
 					}
 				}
 			}
