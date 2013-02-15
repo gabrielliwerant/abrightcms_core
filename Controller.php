@@ -278,7 +278,7 @@ Class Controller
 				);
 			}
 			else
-			{
+			{				
 				$nav_item = $data['text'];
 			}
 			
@@ -300,26 +300,28 @@ Class Controller
 	 * @param string prefix Prefix for view property name
 	 * @param array $branding_data Branding values for building HTML
 	 * 
+	 * @todo make so we can have anchor or not happen automatically
+	 * 
 	 * @return object Controller
 	 */
-	protected function _setLogoInAnchorTag($prefix, $branding_data)
+	protected function _setLogoInAnchorTag($prefix, $logo_data)
 	{
 		$output_name = $prefix . 'logo';
 		
 		$logo = $this->_view->buildBrandingLogo(
-			$branding_data['logo']['src'],
-			$branding_data['logo']['alt'],
-			$branding_data['logo']['id']
+			$logo_data['src'],
+			$logo_data['alt'],
+			$logo_data['id']
 		);
 		
 		$this->_view->$output_name = $this->_view->buildAnchorTag(
 			$logo, 
-			$branding_data['logo']['path'], 
-			(boolean)$branding_data['logo']['is_internal'], 
-			$branding_data['logo']['target'], 
-			$branding_data['logo']['title'],
-			$branding_data['logo']['class'],
-			$branding_data['logo']['id']
+			$logo_data['path'], 
+			(boolean)$logo_data['is_internal'], 
+			$logo_data['target'], 
+			$logo_data['title'],
+			$logo_data['class'],
+			$logo_data['id']
 		);
 		
 		return $this;
