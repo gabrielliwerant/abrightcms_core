@@ -60,6 +60,7 @@ class View
 	private function _buildAttributeList($attribute_data)
 	{
 		$attribute_list = null;
+		
 		foreach ($attribute_data as $key => $value)
 		{
 			if ( ! empty($value))
@@ -70,6 +71,38 @@ class View
 		}
 		
 		return $attribute_list;
+	}
+	
+	/**
+	 * Builds a standard HTML list item with optional class and/or id.
+	 *
+	 * @param string $text
+	 * @param string $class
+	 * @param string $id
+	 * 
+	 * @return string HTML 
+	 */
+	public function buildListItem($text, $class = null, $id = null)
+	{
+		if ( ! empty($class))
+		{
+			$class_attr = ' class="' . $class . '"';
+		}
+		else
+		{
+			$class_attr = null;
+		}
+		
+		if ( ! empty($id))
+		{
+			$id_attr = ' id="' . $id . '"';
+		}
+		else
+		{
+			$id_attr = null;
+		}
+		
+		return '<li' . $id_attr . $class_attr . '>' . $text . '</li>';
 	}
 	
 	/**
@@ -222,7 +255,7 @@ class View
 		
 		foreach ($list_data as $text => $path)
 		{
-			$list_items .= '<li>' . $this->buildAnchorTag($text, $path, false) . '</li>';
+			$list_items .= $this->buildListItem($this->buildAnchorTag($text, $path, false));
 		}
 		
 		$list = '<div class="link-column"><p>' . $list_name . '</p><ul>' . $list_items . '</ul></div>';
@@ -295,7 +328,7 @@ class View
 			$separator = null;
 		}
 		
-		$header_nav	= '<li class="' . $list_class . '">' . $nav . $separator . '</li>';
+		$header_nav = $this->buildListItem($nav . $separator, $list_class);
 		
 		return $header_nav;
 	}
@@ -323,8 +356,8 @@ class View
 			}
 		}
 		
-		$separator	= '<span class="separator">' . $separator . '</span>';		
-		$copyright	= '<li>' . $copyright . $separator . '</li>';
+		$separator	= '<span class="separator">' . $separator . '</span>';	
+		$copyright = $this->buildListItem($copyright . $separator);
 		
 		return $copyright;
 	}
