@@ -274,7 +274,9 @@ Class Controller
 					$data['path'], 
 					$data['is_internal'], 
 					$data['target'],
-					$data['title']
+					$data['title'],
+					$data['class'],
+					$data['id']
 				);
 			}
 			else
@@ -295,34 +297,37 @@ Class Controller
     }
 	
 	/**
-	 * Set the view property for the rendering of the logo in an anchor tag.
+	 * Set the view property for the rendering of the logo.
 	 *
-	 * @param string prefix Prefix for view property name
-	 * @param array $branding_data Branding values for building HTML
+	 * @param string $property_name
+	 * @param array $logo_data
 	 * 
-	 * @todo make so we can have anchor or not happen automatically
-	 * 
-	 * @return object Controller
+	 * @return object Controller 
 	 */
-	protected function _setLogoInAnchorTag($prefix, $logo_data)
+	protected function _setLogo($property_name, $logo_data)
 	{
-		$output_name = $prefix . 'logo';
-		
 		$logo = $this->_view->buildBrandingLogo(
 			$logo_data['src'],
 			$logo_data['alt'],
 			$logo_data['id']
 		);
 		
-		$this->_view->$output_name = $this->_view->buildAnchorTag(
-			$logo, 
-			$logo_data['path'], 
-			(boolean)$logo_data['is_internal'], 
-			$logo_data['target'], 
-			$logo_data['title'],
-			$logo_data['class'],
-			$logo_data['id']
-		);
+		if ((boolean)$logo_data['is_anchor'])
+		{
+			$this->_view->$property_name = $this->_view->buildAnchorTag(
+				$logo, 
+				$logo_data['path'], 
+				(boolean)$logo_data['is_internal'], 
+				$logo_data['target'], 
+				$logo_data['title'],
+				$logo_data['class'],
+				$logo_data['id']
+			);
+		}
+		else
+		{
+			$this->_view->$property_name = $logo;
+		}
 		
 		return $this;
 	}
