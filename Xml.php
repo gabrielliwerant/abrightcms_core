@@ -175,16 +175,16 @@ class Xml
 	/**
 	 * Loads an XML file and then stores the decoded data into an array.
 	 * 
-	 * @param string $file_name Is the name of the XML file we want data from
+	 * @param string $path Path to the XML file we want data from
 	 * @param string $key Allows us to set a name for the XML array
 	 * 
 	 * @return object Json
 	 */
-	public function setFileAsArray($file_name, $key)
+	public function setFileAsArray($path, $key)
 	{
-		$file_path = XML_PATH . '/' . $file_name . '.xml';
+		//$file_path = XML_PATH . '/' . $file_name . '.xml';
 
-		$this->_xml[$key] = $this->getXmlDecode($file_path);
+		$this->_xml[$key] = $this->getXmlDecode($path);
 		
 		return $this;
 	}
