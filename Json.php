@@ -162,14 +162,14 @@ class Json
 	/**
 	 * Loads a JSON file and then stores the decoded data into an array.
 	 * 
-	 * @param string $file_name Is the name of the JSON file we want data from
+	 * @param string $path Path to the JSON file we want data from
 	 * @param string $key Allows us to set a name for the JSON array
 	 * 
 	 * @return object Json
 	 */
-	public function setFileAsArray($file_name, $key)
+	public function setFileAsArray($path, $key)
 	{
-		$json_encoded = file_get_contents(JSON_PATH . '/' . $file_name . '.json');
+		$json_encoded = file_get_contents($path);
 		
 		$this->_json[$key] = $this->getJsonDecode($json_encoded);
 		
