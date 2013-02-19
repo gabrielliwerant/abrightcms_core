@@ -76,7 +76,7 @@ class ApplicationFactory
 	 */
 	public static function makeEmail()
 	{
-		return new EmailMock();
+		return new Email();
 	}
 	
 	/**
