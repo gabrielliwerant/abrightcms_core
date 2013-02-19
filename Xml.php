@@ -3,8 +3,8 @@
 /**
  * A Bright CMS
  * 
- * Core MVC/CMS framework used in TaskVolt and created for lightweight, custom
- * web applications.
+ * Open source, lightweight, web application framework and content management 
+ * system in PHP.
  * 
  * @package A Bright CMS
  * @author Gabriel Liwerant
@@ -26,7 +26,7 @@ class Xml
 	const COULD_NOT_CONVERT_TO_BOOELAN				= 1003;
 	
 	/**
-	 * Stores array of arrays for CMLS files with their associated data.
+	 * Stores array of arrays for xml files with their associated data.
 	 *
 	 * @var array $_xml
 	 */

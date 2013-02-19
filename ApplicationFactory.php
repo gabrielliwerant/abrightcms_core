@@ -3,8 +3,8 @@
 /**
  * A Bright CMS
  * 
- * Core MVC/CMS framework used in TaskVolt and created for lightweight, custom
- * web applications.
+ * Open source, lightweight, web application framework and content management 
+ * system in PHP.
  * 
  * @package A Bright CMS
  * @author Gabriel Liwerant
@@ -13,7 +13,7 @@
 /**
  * ApplicationFactory Class
  * 
- * @subpackage system/core
+ * @subpackage core
  * @author Gabriel Liwerant
  */
 class ApplicationFactory
@@ -47,8 +47,8 @@ class ApplicationFactory
 	/**
 	 * Exception factory
 	 *
-	 * @param string $msg
-	 * @param string $code
+	 * @param string|void $msg
+	 * @param string|void $code
 	 * 
 	 * @return object MyException 
 	 */

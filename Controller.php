@@ -3,8 +3,8 @@
 /**
  * A Bright CMS
  * 
- * Core MVC/CMS framework used in TaskVolt and created for lightweight, custom
- * web applications.
+ * Open source, lightweight, web application framework and content management 
+ * system in PHP.
  * 
  * @package A Bright CMS
  * @author Gabriel Liwerant
@@ -17,7 +17,7 @@
  * 
  * Holds instance of model and view.
  * 
- * @subpackage system/core
+ * @subpackage core
  * @author Gabriel Liwerant
  */
 Class Controller
@@ -210,7 +210,7 @@ Class Controller
 	 * Allows us to force re-caching on included files like CSS and JS.
 	 *
 	 * @param boolean $is_mode_cache_busting
-	 * @param string $preexisting_value Any preexisting re-cache value to use
+	 * @param string|void $preexisting_value Preexisting re-cache value to use
 	 * 
 	 * @return string The re-cache string to append to files
 	 */
@@ -242,7 +242,7 @@ Class Controller
      * 
 	 * @param string $nav_property
      * @param array $nav_data Name and other information for the nav
-	 * @param string $separator Optional separator in HTML for nav items
+	 * @param string|void $separator Optional separator in HTML for nav items
 	 * 
 	 * @return object Controller
      */
@@ -336,7 +336,7 @@ Class Controller
 	 * Set the view property for the rendering of the fine print.
 	 *
 	 * @param array $fine_print_data Name and other information for footer nav
-	 * @param string $separator Optional separator in HTML for nav items
+	 * @param string|void $separator Optional separator in HTML for nav items
 	 * 
 	 * @return object Controller
 	 */

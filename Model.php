@@ -3,8 +3,8 @@
 /**
  * A Bright CMS
  * 
- * Core MVC/CMS framework used in TaskVolt and created for lightweight, custom
- * web applications.
+ * Open source, lightweight, web application framework and content management 
+ * system in PHP.
  * 
  * @package A Bright CMS
  * @author Gabriel Liwerant
@@ -15,7 +15,7 @@
  * 
  * Base model for entire application.
  * 
- * @subpackage system/core
+ * @subpackage core
  * @author Gabriel Liwerant
  */
 class Model
@@ -62,7 +62,7 @@ class Model
 	 * @param object $storage_obj Data storage object
 	 * @param string $storage_type The way data is stored and retrieved
 	 * @param object $logger_obj
-	 * @param object $db
+	 * @param object|void $db
 	 */
 	public function __construct($storage_obj, $storage_type, $logger_obj, $db = null)
 	{
@@ -355,8 +355,8 @@ class Model
 	 * Set up our email and get it ready to send.
 	 *
 	 * @param string $message
-	 * @param string $subject
-	 * @param string $reply_to
+	 * @param string|void $subject
+	 * @param string|void $reply_to
 	 * @param string $address
 	 * 
 	 * @return object Model 
