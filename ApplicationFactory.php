@@ -70,6 +70,16 @@ class ApplicationFactory
 	}
 	
 	/**
+	 * Email factory
+	 *
+	 * @return object Email 
+	 */
+	public static function makeEmail()
+	{
+		return new Email();
+	}
+	
+	/**
 	 * Setter for storage type.
 	 * 
 	 * Make sure to capitalize correctly to match class name.

@@ -181,7 +181,7 @@ class Loader
 					}
 				}
 			}
-			
+
 			self::load(array($main_dir['path']), $class_name);
 		}
 	}
