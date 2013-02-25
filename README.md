@@ -5,9 +5,10 @@ core classes and dependencies necessary to run the framework.
 
 ## Requirements
 
-* PHP 5 >= 5.2, PHP 5.3 recommended
+* PHP 5 >= 5.2, Tested up to 5.4.3.
 
 ## Contact
 
 * Email: gabriel@abrightconcept.com
 * Twitter: @gabrielliwerant
+* Website: http://abrightcms.com

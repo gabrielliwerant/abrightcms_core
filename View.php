@@ -3,8 +3,8 @@
 /**
  * A Bright CMS
  * 
- * Core MVC/CMS framework used in TaskVolt and created for lightweight, custom
- * web applications.
+ * Open source, lightweight, web application framework and content management 
+ * system in PHP.
  * 
  * @package A Bright CMS
  * @author Gabriel Liwerant
@@ -17,7 +17,7 @@
  * 
  * Renders the standard template pages.
  * 
- * @subpackage system/core
+ * @subpackage core
  * @author Gabriel Liwerant
  */
 class View
@@ -60,6 +60,7 @@ class View
 	private function _buildAttributeList($attribute_data)
 	{
 		$attribute_list = null;
+		
 		foreach ($attribute_data as $key => $value)
 		{
 			if ( ! empty($value))
@@ -70,6 +71,38 @@ class View
 		}
 		
 		return $attribute_list;
+	}
+	
+	/**
+	 * Builds a standard HTML list item with optional class and/or id.
+	 *
+	 * @param string $text
+	 * @param string|void $class
+	 * @param string|void $id
+	 * 
+	 * @return string HTML 
+	 */
+	public function buildListItem($text, $class = null, $id = null)
+	{
+		if ( ! empty($class))
+		{
+			$class_attr = ' class="' . $class . '"';
+		}
+		else
+		{
+			$class_attr = null;
+		}
+		
+		if ( ! empty($id))
+		{
+			$id_attr = ' id="' . $id . '"';
+		}
+		else
+		{
+			$id_attr = null;
+		}
+		
+		return '<li' . $id_attr . $class_attr . '>' . $text . '</li>';
 	}
 	
 	/**
@@ -99,7 +132,7 @@ class View
 	 * Builds the HTML for a favicon.
 	 *
 	 * @param array $favicon_data Data used to build favicon
-	 * @param string $cache_buster Optional random string to force re-caching
+	 * @param string|void $cache_buster Optional string to force re-caching
 	 * 
 	 * @return string Built HTML for favicon
 	 */
@@ -127,7 +160,7 @@ class View
 	 *
 	 * @param string $name CSS file name
 	 * @param array $css_data CSS file associated data
-	 * @param string $cache_buster Appends query string to bust cache
+	 * @param string|void $cache_buster Appends query string to bust cache
 	 * 
 	 * @return string Built CSS link tag
 	 */
@@ -154,7 +187,7 @@ class View
 	 * Build the script tags for JS files in the head section.
 	 *
 	 * @param array $js_data JS file associated data
-	 * @param string $cache_buster Appends query string to bust cache
+	 * @param string|void $cache_buster Appends query string to bust cache
 	 * 
 	 * @return string Built script tag for JS file
 	 */
@@ -222,7 +255,7 @@ class View
 		
 		foreach ($list_data as $text => $path)
 		{
-			$list_items .= '<li>' . $this->buildAnchorTag($text, $path, false) . '</li>';
+			$list_items .= $this->buildListItem($this->buildAnchorTag($text, $path, false));
 		}
 		
 		$list = '<div class="link-column"><p>' . $list_name . '</p><ul>' . $list_items . '</ul></div>';
@@ -237,9 +270,9 @@ class View
 	 * @param string $path Used to build the href attribute
 	 * @param boolean $is_internal If href is local or remote
 	 * @param string $target
-	 * @param string $title
-	 * @param string $class
-	 * @param string $id
+	 * @param string|void $title Title attribute
+	 * @param string|void $class Class attribute
+	 * @param string|void $id Id attribute
 	 * 
 	 * @return string Built HTML anchor tag
 	 */
@@ -280,7 +313,7 @@ class View
 	 *
 	 * @param string $nav The HTML for the navigation item
 	 * @param string $list_class CSS class to use with list item 
-	 * @param string $separator_string Separating HTML between items
+	 * @param string|void $separator_string Separating HTML between items
 	 * 
 	 * @return string Built navigation item or error message
 	 */
@@ -295,7 +328,7 @@ class View
 			$separator = null;
 		}
 		
-		$header_nav	= '<li class="' . $list_class . '">' . $nav . $separator . '</li>';
+		$header_nav = $this->buildListItem($nav . $separator, $list_class);
 		
 		return $header_nav;
 	}
@@ -304,7 +337,7 @@ class View
 	 * Build the HTML for the copyright.
 	 *
 	 * @param array $copyright_data Data pertaining to copyright information
-	 * @param string $separator Optional separator string to append
+	 * @param string|void $separator Optional separator string to append
 	 * @param boolean $show_current_date Whether or not we show the current date
 	 * 
 	 * @return string Built HTML copyright from data
@@ -323,8 +356,8 @@ class View
 			}
 		}
 		
-		$separator	= '<span class="separator">' . $separator . '</span>';		
-		$copyright	= '<li>' . $copyright . $separator . '</li>';
+		$separator	= '<span class="separator">' . $separator . '</span>';	
+		$copyright = $this->buildListItem($copyright . $separator);
 		
 		return $copyright;
 	}
@@ -332,9 +365,9 @@ class View
 	/**
 	 * Builds the brand logo section.
 	 *
-	 * @param string $src Img tag src attribute
-	 * @param string $alt Img tag alt attribute
-	 * @param string $id Img tag id
+	 * @param string $src Src attribute
+	 * @param string $alt Alt attribute
+	 * @param string|void $id Id attribute
 	 * 
 	 * @return string Prepared HTML for logo with anchor tag
 	 */
@@ -368,4 +401,4 @@ class View
 }
 // End of View Class
 
-/* EOF lib/View.php */
+/* EOF system/core/View.php */

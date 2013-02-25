@@ -3,8 +3,8 @@
 /**
  * A Bright CMS
  * 
- * Core MVC/CMS framework used in TaskVolt and created for lightweight, custom
- * web applications.
+ * Open source, lightweight, web application framework and content management 
+ * system in PHP.
  * 
  * @package A Bright CMS
  * @author Gabriel Liwerant
@@ -16,7 +16,7 @@
  * Contains the methods and properties necessary to load JSON data into the 
  * program and then provide a means to access it.
  * 
- * @subpackage system/core
+ * @subpackage core
  * @author Gabriel Liwerant
  */
 class Json
@@ -162,14 +162,14 @@ class Json
 	/**
 	 * Loads a JSON file and then stores the decoded data into an array.
 	 * 
-	 * @param string $file_name Is the name of the JSON file we want data from
+	 * @param string $path Path to the JSON file we want data from
 	 * @param string $key Allows us to set a name for the JSON array
 	 * 
 	 * @return object Json
 	 */
-	public function setFileAsArray($file_name, $key)
+	public function setFileAsArray($path, $key)
 	{
-		$json_encoded = file_get_contents(JSON_PATH . '/' . $file_name . '.json');
+		$json_encoded = file_get_contents($path);
 		
 		$this->_json[$key] = $this->getJsonDecode($json_encoded);
 		

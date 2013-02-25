@@ -3,8 +3,8 @@
 /**
  * A Bright CMS
  * 
- * Core MVC/CMS framework used in TaskVolt and created for lightweight, custom
- * web applications.
+ * Open source, lightweight, web application framework and content management 
+ * system in PHP.
  * 
  * @package A Bright CMS
  * @author Gabriel Liwerant
@@ -16,7 +16,7 @@
  * Acts as front controller which we use to find other controllers and run the 
  * application.
  * 
- * @subpackage system/core
+ * @subpackage core
  * @author Gabriel Liwerant
  */
 class Application
@@ -122,7 +122,7 @@ class Application
 	 * Returns part of the stored URL array according to the given key or the 
 	 * entire URL array if no key is specified.
 	 * 
-	 * @param int $key Array index to return
+	 * @param integer|void $key Array index to return
 	 * 
 	 * @return string URL value for the given index or entire array
 	 */

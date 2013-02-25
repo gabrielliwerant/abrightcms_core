@@ -3,8 +3,8 @@
 /**
  * A Bright CMS
  * 
- * Core MVC/CMS framework used in TaskVolt and created for lightweight, custom
- * web applications.
+ * Open source, lightweight, web application framework and content management 
+ * system in PHP.
  * 
  * @package A Bright CMS
  * @author Gabriel Liwerant
@@ -17,7 +17,7 @@
  * 
  * Holds instance of model and view.
  * 
- * @subpackage system/core
+ * @subpackage core
  * @author Gabriel Liwerant
  */
 Class Controller
@@ -210,7 +210,7 @@ Class Controller
 	 * Allows us to force re-caching on included files like CSS and JS.
 	 *
 	 * @param boolean $is_mode_cache_busting
-	 * @param string $preexisting_value Any preexisting re-cache value to use
+	 * @param string|void $preexisting_value Preexisting re-cache value to use
 	 * 
 	 * @return string The re-cache string to append to files
 	 */
@@ -238,25 +238,26 @@ Class Controller
 	}
 	
     /**
-     * Set the view property for the rendering of the header navigation.
+     * Set the view property for the rendering of the navigation.
      * 
-     * @param array $header_nav_data Name and other information for header nav
-	 * @param string $separator Optional separator in HTML for nav items
+	 * @param string $nav_property
+     * @param array $nav_data Name and other information for the nav
+	 * @param string|void $separator Optional separator in HTML for nav items
 	 * 
 	 * @return object Controller
      */
-    protected function _setHeaderNav($header_nav_data, $separator = null)
+    protected function _setNav($nav_property, $nav_data, $separator = null)
     {
-        $this->_view->header_nav	= null;
+        $this->_view->$nav_property	= null;
 		$i							= 1;        
 
-		foreach ($header_nav_data as $nav => $data)
+		foreach ($nav_data as $nav => $data)
         {
             if ($i === 1)
 			{
 				$list_class = 'first';
 			}			
-			elseif ($i === count($header_nav_data))
+			elseif ($i === count($nav_data))
 			{
 				$list_class = 'last';
 				$separator	= null;
@@ -268,17 +269,23 @@ Class Controller
 			
 			if ((boolean)$data['is_anchor'])
 			{			
-				$nav = $this->_view->buildAnchorTag(
-					$nav,
+				$nav_item = $this->_view->buildAnchorTag(
+					$data['text'],
 					$data['path'], 
 					$data['is_internal'], 
 					$data['target'],
-					$data['title']
+					$data['title'],
+					$data['class'],
+					$data['id']
 				);
 			}
+			else
+			{				
+				$nav_item = $data['text'];
+			}
 			
-			$this->_view->header_nav .=  $this->_view->buildNav(
-				$nav, 
+			$this->_view->$nav_property .=  $this->_view->buildNav(
+				$nav_item, 
 				$list_class, 
 				$separator
 			);
@@ -290,102 +297,73 @@ Class Controller
     }
 	
 	/**
-	 * Set the view property for the rendering of the logo in an anchor tag.
+	 * Set the view property for the rendering of the logo.
 	 *
-	 * @param string prefix Prefix for view property name
-	 * @param array $branding_data Branding values for building HTML
+	 * @param string $property_name
+	 * @param array $logo_data
 	 * 
-	 * @return object Controller
+	 * @return object Controller 
 	 */
-	protected function _setLogoInAnchorTag($prefix, $branding_data)
+	protected function _setLogo($property_name, $logo_data)
 	{
-		$output_name = $prefix . 'logo';
-
 		$logo = $this->_view->buildBrandingLogo(
-			$branding_data['logo']['src'],
-			$branding_data['logo']['alt'],
-			$branding_data['logo']['id']
+			$logo_data['src'],
+			$logo_data['alt'],
+			$logo_data['id']
 		);
 		
-		$this->_view->$output_name = $this->_view->buildAnchorTag(
-			$logo, 
-			$branding_data['logo']['path'], 
-			(boolean)$branding_data['logo']['is_internal'], 
-			$branding_data['logo']['target'], 
-			$branding_data['logo']['title'],
-			$branding_data['logo']['class'],
-			$branding_data['logo']['id']
-		);
+		if ((boolean)$logo_data['is_anchor'])
+		{
+			$this->_view->$property_name = $this->_view->buildAnchorTag(
+				$logo, 
+				$logo_data['path'], 
+				(boolean)$logo_data['is_internal'], 
+				$logo_data['target'], 
+				$logo_data['title'],
+				$logo_data['class'],
+				$logo_data['id']
+			);
+		}
+		else
+		{
+			$this->_view->$property_name = $logo;
+		}
 		
 		return $this;
 	}
-    
-	/**
-	 * Get built copyright from view.
-	 *
-	 * @param array $copyright_data
-	 * @param string $separator Optional separator
-	 * @param boolean $show_current_date
-	 * 
-	 * @return string HTML copyright information 
-	 */
-	protected function _getCopyright($copyright_data, $separator = null, $show_current_date = true)
-	{
-		return $this->_view->buildCopyright($copyright_data, $separator, $show_current_date);
-	}
 	
 	/**
-	 * Set the view property for the rendering of the footer navigation.
+	 * Set the view property for the rendering of the fine print.
 	 *
-	 * @param array $footer_nav_data Name and other information for footer nav
-	 * @param string $separator Optional separator in HTML for nav items
-	 * 
-	 * @todo separate copyright building from the rest of footer nav, which will
-	 *		require some refactoring of the json template as well.
+	 * @param array $fine_print_data Name and other information for footer nav
+	 * @param string|void $separator Optional separator in HTML for nav items
 	 * 
 	 * @return object Controller
 	 */
-	protected function _setFooterNav($footer_nav_data, $separator = null)
+	protected function _setFinePrint($fine_print_data, $separator = null)
 	{
-		$this->_view->footer_nav	= null;		
+		$this->_view->fine_print	= null;		
 		$i							= 1;
 		
-		foreach ($footer_nav_data as $nav => $data)
+		foreach ($fine_print_data as $nav => $data)
 		{
 			if ($nav === 'copyright')
 			{
-				$this->_view->footer_nav .= $this->_getCopyright($data, $separator, true);
+				$this->_view->fine_print .= $this->_view->buildCopyright(
+					$data, 
+					$separator, 
+					(boolean)$data['show_current_date']
+				);
 			}
 			else
-			{
-				if ((boolean)$data['is_anchor'])
-				{
-					$nav_item = $this->_view->buildAnchorTag(
-						$data['text'], 
-						$data['path'], 
-						$data['is_internal'], 
-						$data['target'],
-						$data['title'],
-						$data['class'],
-						$data['id']
-					);
-				}
-				else
-				{
-					$nav_item = $data['text'];
-				}
-				
+			{				
 				// If we use a separator, make the last one null
-				if ($i === count($footer_nav_data))
+				if ($i === count($fine_print_data))
 				{
 					$separator = null;
 				}
-
-				$this->_view->footer_nav .= $this->_view->buildNav(
-					$nav_item, 
-					null, 
-					$separator
-				);
+				
+				$this->_view->fine_print .= $this->_view->buildNav($data, null, $separator);
 			}
 			
 			$i++;

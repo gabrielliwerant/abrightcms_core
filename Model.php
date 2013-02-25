@@ -3,8 +3,8 @@
 /**
  * A Bright CMS
  * 
- * Core MVC/CMS framework used in TaskVolt and created for lightweight, custom
- * web applications.
+ * Open source, lightweight, web application framework and content management 
+ * system in PHP.
  * 
  * @package A Bright CMS
  * @author Gabriel Liwerant
@@ -15,7 +15,7 @@
  * 
  * Base model for entire application.
  * 
- * @subpackage system/core
+ * @subpackage core
  * @author Gabriel Liwerant
  */
 class Model
@@ -49,41 +49,34 @@ class Model
 	protected $_key_gen;
 	
 	/**
+	 * Email object property
+	 *
+	 * @var object $_email
+	 */
+	protected $_email;	
+	
+	/**
 	 * Upon instantiation, we pass all the objects we want our model object to
 	 * contain. We also load all data required according to storage type.
 	 * 
 	 * @param object $storage_obj Data storage object
 	 * @param string $storage_type The way data is stored and retrieved
 	 * @param object $logger_obj
-	 * @param object $db
+	 * @param object|void $db
 	 */
 	public function __construct($storage_obj, $storage_type, $logger_obj, $db = null)
 	{
 		$this->_setStorageObject($storage_obj)->_setLogger($logger_obj)->_setDatabase($db);
 
-		switch (strtolower($storage_type))
+		$storage_type = strtolower($storage_type);
+		
+		switch ($storage_type)
 		{
 			case 'json' :
-				$file_arr = scandir(JSON_PATH);
-				foreach ($file_arr as $file)
-				{
-					if (preg_match('/\.json/', $file))
-					{
-						$file_name = explode('.', $file);						
-						$this->setDataFromStorage($file_name[0], $file_name[0]);
-					}
-				}
+				$this->setFilesFromDirectoryIntoStorage(JSON_PATH, $storage_type);
 				break;
 			case 'xml' :
-				$file_arr = scandir(XML_PATH);		
-				foreach ($file_arr as $file)
-				{
-					if (preg_match('/\.xml/', $file))
-					{
-						$file_name = explode('.', $file);
-						$this->setDataFromStorage($file_name[0], $file_name[0]);
-					}
-				}
+				$this->setFilesFromDirectoryIntoStorage(XML_PATH, $storage_type);
 				break;
 		}
 	}
@@ -129,6 +122,18 @@ class Model
 		
 		return $this;
 	}
+
+	/**
+	 * Email setter
+	 *
+	 * @return object IndexModel
+	 */
+	public function setEmail()
+	{
+		$this->_email = ApplicationFactory::makeEmail();
+
+		return $this;
+	}	
 	
 	/**
 	 * KeyGenerator factory
@@ -176,16 +181,42 @@ class Model
 	}
 	
 	/**
+	 * Find all files in a given directory and set them into our storage method.
+	 *
+	 * @param string $dir
+	 * @param string $file_type
+	 * 
+	 * @return object Model 
+	 */
+	public function setFilesFromDirectoryIntoStorage($dir, $file_type)
+	{
+		$file_arr = scandir($dir);
+		
+		foreach ($file_arr as $file)
+		{
+			if (preg_match('/\.' . $file_type . '/', $file))
+			{
+				$file_name	= explode('.', $file);
+				$file_path	= $dir . '/' . $file;
+				
+				$this->setDataFromStorage($file_path, $file_name[0]);
+			}
+		}
+		
+		return $this;
+	}
+	
+	/**
 	 * Adds a data file to the storage property.
 	 *
-	 * @param string $json_file Name of data file to set
+	 * @param string $data_file_path Path of data file to set
 	 * @param string $key Name of key to reference data file in array
 	 * 
 	 * @return object Model
 	 */
-	public function setDataFromStorage($data_file, $key)
+	public function setDataFromStorage($data_file_path, $key)
 	{
-		$this->_storage->setFileAsArray($data_file, $key);
+		$this->_storage->setFileAsArray($data_file_path, $key);
 		
 		return $this;
 	}
@@ -193,13 +224,13 @@ class Model
 	/**
 	 * We grab the data from a data file, using our storage object.
 	 *
-	 * @param string $json_file Name of the file to load as view data
+	 * @param string $data_file_name Name of the file to load as view data
 	 * 
 	 * @return array Data from storage file
 	 */
-	public function getDataFromStorage($data_file)
+	public function getDataFromStorage($data_file_name)
 	{		
-		return $this->_storage->getFileAsArray($data_file);
+		return $this->_storage->getFileAsArray($data_file_name);
 	}
 	
 	/**
@@ -319,6 +350,60 @@ class Model
 		
 		return $post;
 	}
+	
+	/**
+	 * Set up our email and get it ready to send.
+	 *
+	 * @param string $message
+	 * @param string|void $subject
+	 * @param string|void $reply_to
+	 * @param string $address
+	 * 
+	 * @return object Model 
+	 */
+	public function prepareEmail($message, $subject = null, $reply_to = null, $address = EMAIL_ADDRESS)
+	{
+		$this->_email
+			->setMessage($message)
+			->setSubject($subject)
+			->setReplyTo($reply_to)
+			->setEmailAddress($address);
+		
+		return $this;
+	}
+	
+	/**
+	 * Validates a given email address
+	 *
+	 * @param string $email_address Email address to validate
+	 * 
+	 * @return boolean Result of validation process
+	 */
+	public function validateEmail($email_address)
+	{
+		return $this->_email->validateEmailAddress($email_address);
+	}
+	
+	/**
+	 * Runs the send message method on our email object and log a message with
+	 * the email data if the sending failed.
+	 *
+	 * @param array $data_to_log Email data to log in the event of failure
+	 * 
+	 * @return boolean Whether or not the email was sent successfully by PHP
+	 */
+	public function sendEmail($data_to_log)
+	{
+		$is_successful = $this->_email->sendMessage(EMAIL_HEADERS, IS_MODE_PRODUCTION);
+
+		if ( ! $is_successful)
+		{
+			$log_msg = $this->_buildLogMessageFromArray($data_to_log);
+			$this->_writeLog($log_msg, 'email', 'emailLog');
+		}
+
+		return $is_successful;
+	}	
 }
 // End of Model Class
 
