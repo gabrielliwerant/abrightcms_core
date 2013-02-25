@@ -203,32 +203,6 @@ class Application
 		{
 			$is_controller = $this->_findControllerMatchingUrl(CONTROLLER_PATH, $url);
 			
-			/* $controllers_arr = scandir(CONTROLLER_PATH, 1);
-
-			$is_controller = false;
-			
-			foreach ($controllers_arr as $controller)
-			{
-				$controller = explode('.', $controller);
-				
-				if ( ! isset($controller[1]))
-				{
-					$subdirectory_arr = scandir(CONTROLLER_PATH . '/' . $controller[0], 1);
-					
-					foreach ($subdirectory_arr as $sub_file)
-					{
-						$controller = explode('.', $sub_file);
-						
-						$is_controller = true;
-					}
-				}
-
-				if ($url === $controller[0])
-				{
-					$is_controller = true;
-				}
-			} */
-
 			// Set the URL if it passed the checks above and is not error
 			if ($is_controller AND $url !== 'error')
 			{
@@ -244,9 +218,15 @@ class Application
 		return $this;
 	}
 	
-	//
-	//
-	//
+	/**
+	 * Find a controller match based upon a url and a controller path. Search 
+	 * the controller path and its subdirectories recursively.
+	 *
+	 * @param string $controller_path
+	 * @param string $url
+	 * 
+	 * @return boolean
+	 */
 	private function _findControllerMatchingUrl($controller_path, $url)
 	{
 		$directory	= scandir($controller_path, 1);
