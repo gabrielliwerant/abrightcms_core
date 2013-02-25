@@ -188,6 +188,8 @@ class Application
 	 * @param string $url User-entered URL to check
 	 * 
 	 * @return object Application
+	 * 
+	 * @todo make this recursive, clean up method
 	 */
 	private function _setController($url)
 	{
@@ -199,20 +201,33 @@ class Application
 		}	
 		else
 		{
-			$controllers_arr = scandir(CONTROLLER_PATH, 1);
+			$is_controller = $this->_findControllerMatchingUrl(CONTROLLER_PATH, $url);
+			
+			/* $controllers_arr = scandir(CONTROLLER_PATH, 1);
 
 			$is_controller = false;
 			
 			foreach ($controllers_arr as $controller)
 			{
-				// Separate the file name from the extension
 				$controller = explode('.', $controller);
+				
+				if ( ! isset($controller[1]))
+				{
+					$subdirectory_arr = scandir(CONTROLLER_PATH . '/' . $controller[0], 1);
+					
+					foreach ($subdirectory_arr as $sub_file)
+					{
+						$controller = explode('.', $sub_file);
+						
+						$is_controller = true;
+					}
+				}
 
 				if ($url === $controller[0])
 				{
 					$is_controller = true;
 				}
-			}
+			} */
 
 			// Set the URL if it passed the checks above and is not error
 			if ($is_controller AND $url !== 'error')
@@ -227,6 +242,34 @@ class Application
 		}
 		
 		return $this;
+	}
+	
+	//
+	//
+	//
+	private function _findControllerMatchingUrl($controller_path, $url)
+	{
+		$directory	= scandir($controller_path, 1);
+		$is_found	= false;
+
+		foreach ($directory as $listing)
+		{
+			$file_name = explode('.', $listing);
+
+			// Check if listing is a directory and recurse if it is
+			if ( ! isset($file_name[1]))
+			{
+				$is_found = $this->_findControllerMatchingUrl($controller_path . '/' . $file_name[0], $url);
+			}
+
+			// We exit the loop when we find a match
+			if ( ($url === $file_name[0]) OR ($is_found) )
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	/**
