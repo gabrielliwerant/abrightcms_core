@@ -3,8 +3,8 @@
 /**
  * A Bright CMS
  * 
- * Core MVC/CMS framework used in TaskVolt and created for lightweight, custom
- * web applications.
+ * Open source, lightweight, web application framework and content management 
+ * system in PHP.
  * 
  * @package A Bright CMS
  * @author Gabriel Liwerant
@@ -16,7 +16,7 @@
  * We can generate a key from some standard key strings stored in a property or
  * we can generate a key from a passed key string argument.
  * 
- * @subpackage system/core
+ * @subpackage core
  * @author Gabriel Liwerant
  */
 class KeyGenerator

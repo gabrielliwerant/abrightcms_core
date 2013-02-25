@@ -3,8 +3,8 @@
 /**
  * A Bright CMS
  * 
- * Core MVC/CMS framework used in TaskVolt and created for lightweight, custom
- * web applications.
+ * Open source, lightweight, web application framework and content management 
+ * system in PHP.
  * 
  * @package A Bright CMS
  * @author Gabriel Liwerant
@@ -13,7 +13,7 @@
 /**
  * MyException Class
  * 
- * @subpackage system/core
+ * @subpackage core
  * @author Gabriel Liwerant
  * 
  * @uses Exception
@@ -31,9 +31,9 @@ class MyException extends Exception
 	 * Call the parent constructor when we throw a new exception.
 	 *
 	 * @param object $logger_obj
-	 * @param string $msg Exception message
-	 * @param integer $code Reference code for exception
-	 * @param object $previous Previous exception, if one exists
+	 * @param string|void $msg Exception message
+	 * @param integer|void $code Reference code for exception
+	 * @param object|void $previous Previous exception, if one exists
 	 */
 	public function __construct($logger_obj, $msg = null, $code = null, $previous = null)
 	{

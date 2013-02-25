@@ -3,8 +3,8 @@
 /**
  * A Bright CMS
  * 
- * Core MVC/CMS framework used in TaskVolt and created for lightweight, custom
- * web applications.
+ * Open source, lightweight, web application framework and content management 
+ * system in PHP.
  * 
  * @package A Bright CMS
  * @author Gabriel Liwerant
@@ -26,7 +26,7 @@ class Xml
 	const COULD_NOT_CONVERT_TO_BOOELAN				= 1003;
 	
 	/**
-	 * Stores array of arrays for CMLS files with their associated data.
+	 * Stores array of arrays for xml files with their associated data.
 	 *
 	 * @var array $_xml
 	 */
@@ -104,30 +104,32 @@ class Xml
 
 		foreach ($children as $key => $value)
 		{
-			if ($value instanceof SimpleXMLElement)
+			if ( ! $value instanceof SimpleXMLElement)
 			{
-				$values = (array)$value->children();
+				continue;
+			}
+			
+			$values = (array)$value->children();
 
-				if (count($values) > 0)
+			if (count($values) > 0)
+			{
+				$xml_arr[$key] = $this->convertSimpleXmlElementToArray($value);
+			}
+			else
+			{
+				if ( ! isset($xml_arr[$key]))
 				{
-					$xml_arr[$key] = $this->convertSimpleXmlElementToArray($value);
+					$xml_arr[$key] = (string)$value;
 				}
 				else
 				{
-					if ( ! isset($xml_arr[$key]))
+					if ( ! is_array($xml_arr[$key]))
 					{
-						$xml_arr[$key] = (string)$value;
+						$xml_arr[$key] = array($xml_arr[$key], (string)$value);
 					}
 					else
 					{
-						if ( ! is_array($xml_arr[$key]))
-						{
-							$xml_arr[$key] = array($xml_arr[$key], (string)$value);
-						}
-						else
-						{
-							$xml_arr[$key][] = (string)$value;
-						}
+						$xml_arr[$key][] = (string)$value;
 					}
 				}
 			}
@@ -173,16 +175,16 @@ class Xml
 	/**
 	 * Loads an XML file and then stores the decoded data into an array.
 	 * 
-	 * @param string $file_name Is the name of the XML file we want data from
+	 * @param string $path Path to the XML file we want data from
 	 * @param string $key Allows us to set a name for the XML array
 	 * 
 	 * @return object Json
 	 */
-	public function setFileAsArray($file_name, $key)
+	public function setFileAsArray($path, $key)
 	{
-		$file_path = XML_PATH . '/' . $file_name . '.xml';
+		//$file_path = XML_PATH . '/' . $file_name . '.xml';
 
-		$this->_xml[$key] = $this->getXmlDecode($file_path);
+		$this->_xml[$key] = $this->getXmlDecode($path);
 		
 		return $this;
 	}
