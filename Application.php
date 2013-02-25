@@ -201,9 +201,9 @@ class Application
 		}	
 		else
 		{
-			//$is_controller = $this->_findControllerMatchingUrl(CONTROLLER_PATH, $url);
+			$is_controller = $this->_findControllerMatchingUrl(CONTROLLER_PATH, $url);
 			
-			$controllers_arr = scandir(CONTROLLER_PATH, 1);
+			/* $controllers_arr = scandir(CONTROLLER_PATH, 1);
 
 			$is_controller = false;
 			
@@ -227,7 +227,7 @@ class Application
 				{
 					$is_controller = true;
 				}
-			}
+			} */
 
 			// Set the URL if it passed the checks above and is not error
 			if ($is_controller AND $url !== 'error')
@@ -256,12 +256,13 @@ class Application
 		{
 			$file_name = explode('.', $listing);
 
-			// Check if listing is a directory
+			// Check if listing is a directory and recurse if it is
 			if ( ! isset($file_name[1]))
 			{
 				$is_found = $this->_findControllerMatchingUrl($controller_path . '/' . $file_name[0], $url);
 			}
 
+			// We exit the loop when we find a match
 			if ( ($url === $file_name[0]) OR ($is_found) )
 			{
 				return true;
