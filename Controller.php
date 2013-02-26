@@ -20,7 +20,7 @@
  * @subpackage core
  * @author Gabriel Liwerant
  */
-Class Controller
+class Controller
 {	
 	/**
 	 * Holds an instance of the base model
@@ -75,6 +75,21 @@ Class Controller
 		return $this;
 	}
 	
+	/**
+	 * Generic setter for view properties
+	 *
+	 * @param string $property Name of property to set in view
+	 * @param string $data
+	 * 
+	 * @return object Controller 
+	 */
+	protected function _setViewProperty($property, $data)
+	{
+		$this->_view->$property = $data;
+		
+		return $this;
+	}
+	
     /**
      * Set the view properties for the rendering of the basic HTML head 
      * information.
@@ -87,7 +102,7 @@ Class Controller
     {
         foreach($head_data as $key => $value)
 		{
-			$this->_view->$key = $value;
+			$this->_setViewProperty($key, $value);
 		}
 		
 		return $this;
@@ -102,18 +117,18 @@ Class Controller
      */
     private function _setHeadMeta($head_meta)
     {
-        $this->_view->meta = null;
+        $property_data = null;
         
         foreach ($head_meta as $content_type => $content_data)
         {
             foreach($content_data as $type => $value)
 			{
-				$meta_content		= $content_type . '=' . $type;
-				$this->_view->meta	.= $this->_view->buildHeadMeta($meta_content, $value);
+				$meta_content	= $content_type . '=' . $type;
+				$property_data	.= $this->_view->buildHeadMeta($meta_content, $value);
 			}
         }
 		
-		return $this;
+		return $this->_setViewProperty('meta', $property_data);
     }
     
 	/**
@@ -126,14 +141,14 @@ Class Controller
 	 */
 	private function _setHeadIncludesCss($include_data, $cache_buster)
 	{
-		$this->_view->css = null;
+		$property_data = null;
         
         foreach ($include_data as $name => $css_data)
         {
-            $this->_view->css .= $this->_view->buildHeadCss($name, $css_data, $cache_buster);
+            $property_data .= $this->_view->buildHeadCss($name, $css_data, $cache_buster);
         }
 		
-		return $this;
+		return $this->_setViewProperty('css', $property_data);
 	}
 	
 	/**
@@ -146,50 +161,31 @@ Class Controller
 	 */
 	private function _setHeadIncludesFavicon($favicon_data, $cache_buster)
 	{
-		$this->_view->favicon = $this->_view->buildFavicon($favicon_data, $cache_buster);
+		$property_data = $this->_view->buildFavicon($favicon_data, $cache_buster);
 		
-		return $this;
+		return $this->_setViewProperty('favicon', $property_data);
 	}
-	
+
 	/**
-	 * Set the view property for the head JS script tags.
+	 * Set a view property for JavaScript script tags.
 	 *
-	 * @param array $include_data Data with JS file names and other info
+	 * @param string $property Name of property to set in view
+	 * @param array $include_data JS file names and other info
 	 * @param string $cache_buster Optional random string to force re-caching
 	 * 
 	 * @return object Controller
 	 */
-	private function _setHeadIncludesJs($include_data, $cache_buster)
+	private function _setJs($property, $include_data, $cache_buster)
 	{
-		$this->_view->head_js = null;
+		$property_data = null;
 		
 		foreach ($include_data as $name => $js_data)
 		{
-			$this->_view->head_js .= $this->_view->buildJs($js_data, $cache_buster);
+			$property_data .= $this->_view->buildJs($js_data, $cache_buster);
 		}
 		
-		return $this;
-	}
-	
-	/**
-     * Sets the view property for the footer JS script tags to be rendered.
-     * 
-     * @param string array $footer_js_data Names of JS files to load 
-     * @param string $cache_buster Optional random string to force re-caching
-	 * 
-	 * @return object Controller
-     */
-    private function _setFooterJs($footer_js_data, $cache_buster)
-    {
-		$this->_view->footer_js = null;
-		
-		foreach ($footer_js_data as $name => $js_data)
-		{
-			$this->_view->footer_js .= $this->_view->buildJs($js_data, $cache_buster);
-		}
-		
-		return $this;
-    }
+		return $this->_setViewProperty($property, $property_data);
+	}	
     
 	/**
 	 * Setter for the title page view property
@@ -201,40 +197,7 @@ Class Controller
 	 */
 	protected function _setHeadTitlePage($title_page_arr, $key)
 	{
-		$this->_view->title_page = $title_page_arr[$key];
-		
-		return $this;
-	}
-	
-	/**
-	 * Allows us to force re-caching on included files like CSS and JS.
-	 *
-	 * @param boolean $is_mode_cache_busting
-	 * @param string|void $preexisting_value Preexisting re-cache value to use
-	 * 
-	 * @return string The re-cache string to append to files
-	 */
-	protected function _cacheBuster($is_mode_cache_busting, $preexisting_value = null)
-	{
-		if ($is_mode_cache_busting)
-		{
-			if (empty($preexisting_value))
-			{
-				$cache_buster = $this->_model
-					->setKeyGenerator()
-					->createStandardKeyFromKeyGenerator('10', array('digital'));
-			}
-			else
-			{
-				$cache_buster = $preexisting_value;
-			}
-		}
-		else
-		{
-			$cache_buster = null;
-		}
-		
-		return '?' . $cache_buster;
+		return $this->_setViewProperty('title_page', $title_page_arr[$key]);
 	}
 	
     /**
@@ -248,8 +211,8 @@ Class Controller
      */
     protected function _setNav($nav_property, $nav_data, $separator = null)
     {
-        $this->_view->$nav_property	= null;
-		$i							= 1;        
+        $property_data	= null;
+		$i				= 1;        
 
 		foreach ($nav_data as $nav => $data)
         {
@@ -284,16 +247,12 @@ Class Controller
 				$nav_item = $data['text'];
 			}
 			
-			$this->_view->$nav_property .=  $this->_view->buildNav(
-				$nav_item, 
-				$list_class, 
-				$separator
-			);
+			$property_data .= $this->_view->buildNav($nav_item, $list_class, $separator);
 
 			$i++;
         }
 		
-		return $this;
+		return $this->_setViewProperty($nav_property, $property_data);
     }
 	
 	/**
@@ -314,7 +273,7 @@ Class Controller
 		
 		if ((boolean)$logo_data['is_anchor'])
 		{
-			$this->_view->$property_name = $this->_view->buildAnchorTag(
+			$property_data = $this->_view->buildAnchorTag(
 				$logo, 
 				$logo_data['path'], 
 				(boolean)$logo_data['is_internal'], 
@@ -326,10 +285,10 @@ Class Controller
 		}
 		else
 		{
-			$this->_view->$property_name = $logo;
+			$property_data = $logo;
 		}
 		
-		return $this;
+		return $this->_setViewProperty($property_name, $property_data);
 	}
 	
 	/**
@@ -342,14 +301,14 @@ Class Controller
 	 */
 	protected function _setFinePrint($fine_print_data, $separator = null)
 	{
-		$this->_view->fine_print	= null;		
-		$i							= 1;
+		$property_data	= null;		
+		$i				= 1;
 		
 		foreach ($fine_print_data as $nav => $data)
 		{
 			if ($nav === 'copyright')
 			{
-				$this->_view->fine_print .= $this->_view->buildCopyright(
+				$property_data .= $this->_view->buildCopyright(
 					$data, 
 					$separator, 
 					(boolean)$data['show_current_date']
@@ -363,13 +322,13 @@ Class Controller
 					$separator = null;
 				}
 				
-				$this->_view->fine_print .= $this->_view->buildNav($data, null, $separator);
+				$property_data .= $this->_view->buildNav($data, null, $separator);
 			}
 			
 			$i++;
 		}
 		
-		return $this;
+		return $this->_setViewProperty('fine_print', $property_data);
 	}
 	
 	/**
@@ -382,8 +341,8 @@ Class Controller
 	 */
 	protected function _setLinkListColumn($link_data, $max_columns)
 	{
-		$i = 0;
-		$this->_view->link_section = null;
+		$property_data	= null;
+		$i				= 0;
 
 		foreach ($link_data as $list_name => $list_data )
 		{
@@ -391,26 +350,42 @@ Class Controller
 
 			if ($i <= $max_columns)
 			{
-				$this->_view->link_section .= $this->_view->buildLinkListColumn($list_name, $list_data);
+				$property_data .= $this->_view->buildLinkListColumn($list_name, $list_data);
 			}
 		}
 		
-		return $this;
+		return $this->_setViewProperty('link_section', $property_data);
 	}
 	
 	/**
-	 * Generic setter for view properties
+	 * Allows us to force re-caching on included files like CSS and JS.
 	 *
-	 * @param string $property Name of property to set in view
-	 * @param string $data
+	 * @param boolean $is_mode_cache_busting
+	 * @param string|void $preexisting_value Preexisting re-cache value to use
 	 * 
-	 * @return object Controller 
+	 * @return string The re-cache string to append to files
 	 */
-	protected function _setViewProperty($property, $data)
+	protected function _cacheBuster($is_mode_cache_busting, $preexisting_value = null)
 	{
-		$this->_view->$property = $data;
+		if ($is_mode_cache_busting)
+		{
+			if (empty($preexisting_value))
+			{
+				$cache_buster = $this->_model
+					->setKeyGenerator()
+					->createStandardKeyFromKeyGenerator('10', array('digital'));
+			}
+			else
+			{
+				$cache_buster = $preexisting_value;
+			}
+		}
+		else
+		{
+			$cache_buster = null;
+		}
 		
-		return $this;
+		return '?' . $cache_buster;
 	}
 	
 	/**
@@ -424,12 +399,13 @@ Class Controller
 	 */
 	protected function _pageBuilder($data, $cache_buster)
 	{
-		$this->_setHeadDoc($data['head']['head_doc'])
+		$this
+			->_setHeadDoc($data['head']['head_doc'])
 			->_setHeadMeta($data['head']['head_meta'])
 			->_setHeadIncludesCss($data['head']['head_includes']['head_css'], $cache_buster)
 			->_setHeadIncludesFavicon($data['head']['head_includes']['favicon'], $cache_buster)
-			->_setHeadIncludesJs($data['head']['head_includes']['head_js'], $cache_buster)
-			->_setFooterJs($data['footer']['footer_js'], $cache_buster);
+			->_setJs('head_js', $data['head']['head_includes']['head_js'], $cache_buster)
+			->_setJs('footer_js', $data['footer']['footer_js'], $cache_buster);
 
 		return $this;
 	}
