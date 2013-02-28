@@ -147,7 +147,7 @@ class Controller
         {
             $property_data .= $this->_view->buildHeadCss($name, $css_data, $cache_buster);
         }
-		
+
 		return $this->_setViewProperty('css', $property_data);
 	}
 	

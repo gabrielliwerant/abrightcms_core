@@ -90,7 +90,7 @@ class ApplicationFactory
 	 */
 	private function _setStorageType($storage_type)
 	{
-		// Some environments care about case when creating objects
+		// PHP 5.2 cares about case when creating objects
 		$storage_type = ucfirst(strtolower($storage_type));
 		
 		$this->_storage_type = $storage_type;
