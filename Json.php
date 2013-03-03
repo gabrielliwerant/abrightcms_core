@@ -26,7 +26,7 @@ class Json
 	 */
 	const JSON_LAST_ERROR_DECODE		= 1001;
 	const JSON_LAST_ERROR_ENCODE		= 1002;
-	const COULD_NOT_CONVERT_TO_BOOELAN	= 1003;
+	const COULD_NOT_CONVERT_TO_BOOLEAN	= 1003;
 	
 	/**
 	 * Stores array of arrays for JSON files with their associated data.
@@ -219,8 +219,8 @@ class Json
 		}
 		else
 		{
-			throw ApplicationFactory::makeException('Json Exception', self::COULD_NOT_CONVERT_TO_BOOELAN);
-			//throw new Exception('Json Exception', self::COULD_NOT_CONVERT_TO_BOOELAN);
+			throw ApplicationFactory::makeException('Json Exception', self::COULD_NOT_CONVERT_TO_BOOLEAN);
+			//throw new Exception('Json Exception', self::COULD_NOT_CONVERT_TO_BOOLEAN);
 		}
 
 		return $real_boolean;
