@@ -27,6 +27,20 @@ class Application
 	 * @var object $_application_factory
 	 */
 	private $_application_factory;
+
+	/**
+	 * Holds the default page controller name to build
+	 *
+	 * @var string $_default_page_controller
+	 */
+	private $_default_page_controller;
+	
+	/**
+	 * Holds the controller path to search matching controllers from
+	 *
+	 * @var string $_controller_path
+	 */
+	private $_controller_path;
 	
 	/**
 	 * Holds the user-entered URL, broken up into an array.
@@ -69,9 +83,17 @@ class Application
 	 * @param object $application_factory Application factory object
 	 * @param array $get_data Loads data from the URL query string
 	 */
-	public function __construct($application_factory, $get_data)
+	public function __construct(
+		ApplicationFactory $application_factory, 
+		$get_data,
+		$default_page_controller = DEFAULT_PAGE_CONTROLLER,
+		$controller_path = CONTROLLER_PATH
+	)
 	{
-		$this->_setApplicationFactory($application_factory)
+		$this
+			->_setApplicationFactory($application_factory)
+			->_setDefaultPageController($default_page_controller)
+			->_setControllerPath($controller_path)
 			->_setUrl($get_data)
 			->_setController($this->_getUrl(0))
 			->_setMethod($this->_controller, $this->_getUrl(1))
@@ -89,6 +111,34 @@ class Application
 	private function _setApplicationFactory($application_factory)
 	{
 		$this->_application_factory = $application_factory;
+		
+		return $this;
+	}
+
+	/**
+	 * Setter for the default page controller value
+	 *
+	 * @param string $default_page_controller
+	 * 
+	 * @return object Application 
+	 */
+	private function _setDefaultPageController($default_page_controller)
+	{
+		$this->_default_page_controller = $default_page_controller;
+		
+		return $this;
+	}
+	
+	/**
+	 * Setter for the controller path value
+	 *
+	 * @param string $controller_path
+	 * 
+	 * @return object Application 
+	 */
+	private function _setControllerPath($controller_path)
+	{
+		$this->_controller_path = $controller_path;
 		
 		return $this;
 	}
@@ -197,7 +247,7 @@ class Application
 		// controller
 		if (empty($url))
 		{
-			$this->_controller = $this->_application_factory->makeController('index');
+			$this->_controller = $this->_application_factory->makeController(DEFAULT_PAGE_CONTROLLER);
 		}	
 		else
 		{
