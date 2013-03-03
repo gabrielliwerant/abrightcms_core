@@ -398,7 +398,15 @@ class Model
 
 		if ( ! $is_successful)
 		{
-			$log_msg = $this->_buildLogMessageFromArray($data_to_log);
+			if (is_array($data_to_log))
+			{
+				$log_msg = $this->_buildLogMessageFromArray($data_to_log);
+			}
+			else
+			{
+				$log_msg = $data_to_log;
+			}
+			
 			$this->_writeLog($log_msg, 'email', 'emailLog');
 		}
 
