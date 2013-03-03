@@ -41,7 +41,7 @@ class ErrorHandler
 	 * @param object $log 
 	 * @param object $email 
 	 */
-	public function __construct($log, $email)
+	public function __construct(Logger $log, Email $email)
 	{
 		$this->_setLog($log)->_setEmail($email);
 	}
@@ -75,13 +75,33 @@ class ErrorHandler
 	}
 	
 	/**
+	 * Allows us to send an email notification upon fatal error.
+	 *
+	 * @param string $subject Subject line for email
+	 * @param string $msg Email message body
+	 * 
+	 * @return boolean 
+	 */
+	private function _sendEmail($subject, $msg)
+	{
+		$is_successful = $this->_email
+			->setEmailAddress(EMAIL_ADDRESS)
+			->setSubject($subject)
+			->setMessage($msg)
+			->setReplyTo(EMAIL_ADDRESS)			
+			->sendMessage(EMAIL_HEADERS);
+		
+		return $is_successful;
+	}
+	
+	/**
 	 * Allows us to log our fatal errors.
 	 *
 	 * @param string $msg Message to prepend to log message
 	 * 
 	 * @return object ErrorHandler
 	 */
-	private function _createLog($msg)
+	private function _makeLogMessage($msg)
 	{
 		$log_message = $msg;
 		
@@ -92,20 +112,20 @@ class ErrorHandler
 		
 		$log_message = rtrim($log_message, ', ');
 		
-		$this->_log->writeLogToFile($log_message, 'error', 'errorLog');
+		//$this->_log->writeLogToFile($log_message, 'error', 'errorLog');
 		
-		return $this;
+		return $log_message;
 	}
 	
 	/**
-	 * Allows us to send an email notification upon fatal error.
+	 * Prepare an email notification for fatal error.
 	 *
 	 * @param string $subject Subject line for email
 	 * @param string $msg Message to prepend to email message
 	 * 
-	 * @return object ErrorHandler
+	 * @return string
 	 */
-	private function _sendEmail($subject, $msg)
+	private function _makeEmailMessage($msg)
 	{
 		$email_message = $msg . '<br />';
 		
@@ -113,15 +133,8 @@ class ErrorHandler
 		{
 			$email_message .= $key . ' => ' . $value . '<br />';
 		}
-		
-		$this->_email
-			->setEmailAddress(EMAIL_ADDRESS)
-			->setSubject($subject)
-			->setMessage($email_message)
-			->setReplyTo(EMAIL_ADDRESS)			
-			->sendMessage(EMAIL_HEADERS);
 
-		return $this;
+		return $email_message;
 	}
 	
 	/**
@@ -136,8 +149,11 @@ class ErrorHandler
 		
 		if ( ! empty($error_last) )
 		{
-			$this->_createLog('Encountered fatal error: ')
-				->_sendEmail(DOMAIN_NAME . ' Fatal Error', 'Encountered fatal error: ');
+			$log_message = $this->_makeLogMessage('Encountered fatal error: ');
+			$this->_log->writeLogToFile($log_message, 'error', 'errorLog');
+			
+			$email_message = $this->_makeEmailMessage('Encountered fatal error: ');
+			$this->_sendEmail(DOMAIN_NAME . ' Fatal Error', $email_message);
 			
 			header('Location:' . ERROR_HANDLER_PAGE_PATH);
 		}
