@@ -114,7 +114,7 @@ class Application
 		}
 		
 		$this->_url = explode('/', $url);
-		
+
 		return $this;
 	}
 	
@@ -237,7 +237,7 @@ class Application
 			$file_name = explode('.', $listing);
 
 			// Check if listing is a directory and recurse if it is
-			if ( ! isset($file_name[1]))
+			if ( ! isset($file_name[1]) AND ($file_name[0] !== EXCLUDE_CONTROLLER_DIRECTORY) )
 			{
 				$is_found = $this->_findControllerMatchingUrl($controller_path . '/' . $file_name[0], $url);
 			}

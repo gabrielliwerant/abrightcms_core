@@ -117,6 +117,18 @@ class Loader
 	}
 	
 	/**
+	 * PHP 5.2 safe way to convert first character in a string to lower case.
+	 *
+	 * @param string $string
+	 * 
+	 * @return string 
+	 */
+	public static function convertFirstCharacterToLowerCase($string)
+	{
+		return strtolower(substr($string, 0, 1)) . substr($string, 1);
+	}
+	
+	/**
 	 * From an array of directories listed outermost to innermost, built the
 	 * appropriate file path for our class name.
 	 *
@@ -133,7 +145,7 @@ class Loader
 		{
 			$path .= $directory . '/';
 		}
-
+		
 		return $path . $file_name . '.php';
 	}
 	
@@ -143,6 +155,9 @@ class Loader
 	 *
 	 * @param array $directory_arr
 	 * @param string $file_name 
+	 * 
+	 * @todo PHP < 5.3 throws a fit if our case doesn't match the file name 
+	 *		exactly. We need a way to deal with that.
 	 */
 	public static function load($directory_arr, $file_name)
 	{
@@ -152,6 +167,16 @@ class Loader
 		{
 			require $file_path;
 		}
+		/* else
+		{
+			$file_name = self::convertFirstCharacterToLowerCase($file_name);
+			$file_path = self::buildFilePath($directory_arr, $file_name);
+			
+			if (self::isFilePathValid($file_path))
+			{
+				require $file_path;
+			}
+		} */
 	}
 	
 	/**
@@ -172,7 +197,7 @@ class Loader
 			if ($main_dir['search_sub_dir'])
 			{
 				$sub_dir_arr = self::getSubdirectoryArrayFromFilePath($main_dir['path']);
-
+				
 				if ( ! empty($sub_dir_arr))
 				{			
 					foreach ($sub_dir_arr as $sub_dir)
