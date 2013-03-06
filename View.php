@@ -74,6 +74,19 @@ class View
 	}
 	
 	/**
+	 * Build subpage title string.
+	 *
+	 * @param string $sub_title
+	 * @param string|void $separator
+	 * 
+	 * @return string 
+	 */
+	public function buildTitleSubpage($sub_title, $separator = null)
+	{
+		return ' ' . $separator . ' ' . $sub_title;
+	}
+	
+	/**
 	 * Builds a standard HTML list item with optional class and/or id.
 	 *
 	 * @param string $text
