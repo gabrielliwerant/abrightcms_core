@@ -190,14 +190,16 @@ class Controller
 	/**
 	 * Setter for the title page view property
 	 *
-	 * @param array $title_page_arr Map of pages with titles
-	 * @param string $key To map to the page controllers
+	 * @param string $sub_title
+	 * @param string|void $separator Optional separator subpage
 	 * 
 	 * @return object Controller 
 	 */
-	protected function _setHeadTitlePage($title_page_arr, $key)
+	protected function _setTitleSubpage($sub_title, $separator = null)
 	{
-		return $this->_setViewProperty('title_page', $title_page_arr[$key]);
+		$sub_title = $this->_view->buildTitleSubpage($sub_title, $separator);
+
+		return $this->_setViewProperty('title_subpage', $sub_title);
 	}
 	
     /**

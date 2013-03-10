@@ -82,6 +82,8 @@ class Application
 	 * 
 	 * @param object $application_factory Application factory object
 	 * @param array $get_data Loads data from the URL query string
+	 * @param string $default_page_controller
+	 * @param string $controller_path
 	 */
 	public function __construct(
 		ApplicationFactory $application_factory, 
