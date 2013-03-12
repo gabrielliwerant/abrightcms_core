@@ -72,6 +72,19 @@ class View
 		
 		return $attribute_list;
 	}
+
+	/**
+	 * Build subpage title string.
+	 *
+	 * @param string $sub_title
+	 * @param string|void $separator
+	 * 
+	 * @return string 
+	 */
+	public function buildTitleSubpage($sub_title, $separator = null)
+	{
+		return ' ' . $separator . ' ' . $sub_title;
+	}	
 	
 	/**
 	 * Build subpage title string.
