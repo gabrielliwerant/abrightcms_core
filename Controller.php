@@ -200,7 +200,7 @@ class Controller
 		$sub_title = $this->_view->buildTitleSubpage($sub_title, $separator);
 
 		return $this->_setViewProperty('title_subpage', $sub_title);
-	}	
+	}
 	
     /**
      * Set the view property for the rendering of the navigation.

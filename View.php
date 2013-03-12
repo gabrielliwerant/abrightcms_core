@@ -87,15 +87,18 @@ class View
 	}
 	
 	/**
-	 * Builds a standard HTML list item with optional class and/or id.
+	 * Builds a standard HTML tag with optional class and/or id.
 	 *
+	 * @kludge I might be a bad person for writing this method.
+	 * 
+	 * @param string $tag
 	 * @param string $text
 	 * @param string|void $class
 	 * @param string|void $id
 	 * 
 	 * @return string HTML 
 	 */
-	public function buildListItem($text, $class = null, $id = null)
+	public function buildGenericHtmlWrapper($tag, $text, $class = null, $id = null)
 	{
 		if ( ! empty($class))
 		{
@@ -115,7 +118,7 @@ class View
 			$id_attr = null;
 		}
 		
-		return '<li' . $id_attr . $class_attr . '>' . $text . '</li>';
+		return '<' . $tag . ' ' . $id_attr . $class_attr . '>' . $text . '</' . $tag . '>';
 	}
 	
 	/**
@@ -341,7 +344,7 @@ class View
 			$separator = null;
 		}
 		
-		$header_nav = $this->buildListItem($nav . $separator, $list_class);
+		$header_nav = $this->buildGenericHtmlWrapper('li', $nav . $separator, $list_class);
 		
 		return $header_nav;
 	}
@@ -370,7 +373,7 @@ class View
 		}
 		
 		$separator	= '<span class="separator">' . $separator . '</span>';	
-		$copyright = $this->buildListItem($copyright . $separator);
+		$copyright = $this->buildGenericHtmlWrapper('li', $copyright . $separator);
 		
 		return $copyright;
 	}
