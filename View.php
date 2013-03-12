@@ -87,19 +87,6 @@ class View
 	}	
 	
 	/**
-	 * Build subpage title string.
-	 *
-	 * @param string $sub_title
-	 * @param string|void $separator
-	 * 
-	 * @return string 
-	 */
-	public function buildTitleSubpage($sub_title, $separator = null)
-	{
-		return ' ' . $separator . ' ' . $sub_title;
-	}
-	
-	/**
 	 * Builds a standard HTML tag with optional class and/or id.
 	 *
 	 * @kludge I might be a bad person for writing this method.
