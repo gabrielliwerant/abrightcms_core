@@ -13,10 +13,12 @@
 /**
  * ApplicationFactory Class
  * 
+ * @final
+ * 
  * @subpackage core
  * @author Gabriel Liwerant
  */
-class ApplicationFactory
+final class ApplicationFactory
 {
 	/**
 	 * Holds the storage type for model creation.

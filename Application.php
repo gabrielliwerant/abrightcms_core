@@ -16,10 +16,12 @@
  * Acts as front controller which we use to find other controllers and run the 
  * application.
  * 
+ * @final
+ * 
  * @subpackage core
  * @author Gabriel Liwerant
  */
-class Application
+final class Application
 {
 	/**
 	 * Holds an instance of the application factory object.
