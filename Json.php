@@ -19,7 +19,7 @@
  * @subpackage core
  * @author Gabriel Liwerant
  */
-class Json
+class Json implements ApplicationStorageInterface
 {
 	/**
 	 * Error codes for Json
@@ -27,6 +27,7 @@ class Json
 	const JSON_LAST_ERROR_DECODE		= 1001;
 	const JSON_LAST_ERROR_ENCODE		= 1002;
 	const COULD_NOT_CONVERT_TO_BOOLEAN	= 1003;
+	const FILE_DOES_NOT_EXIST			= 1004;
 	
 	/**
 	 * Stores array of arrays for JSON files with their associated data.
@@ -169,9 +170,14 @@ class Json
 	 */
 	public function setFileAsArray($path, $key)
 	{
-		$json_encoded = file_get_contents($path);
+		if ( ! file_exists($path))
+		{
+			throw ApplicationFactory::makeException('Json Exception', self::FILE_DOES_NOT_EXIST);
+			//throw new Exception('Json Exception', self::FILE_DOES_NOT_EXIST);
+		}
 		
-		$this->_json[$key] = $this->getJsonDecode($json_encoded);
+		$json_encoded		= file_get_contents($path);		
+		$this->_json[$key]	= $this->getJsonDecode($json_encoded);
 		
 		return $this;
 	}
@@ -203,6 +209,9 @@ class Json
 	 * attempt to pass "true" and "false" and this function will convert them to 
 	 * their intended boolean. Use with care.
 	 *
+	 * @deprecated method is dangerous and unnecessary, we should use 0 | 1 and 
+	 *		cast them as boolean instead
+	 * 
 	 * @param string $psuedo_boolean String we attempt to convert to boolean
 	 * 
 	 * @return boolean Successfully converted boolean value

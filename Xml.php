@@ -16,7 +16,7 @@
  * @subpackage system/core
  * @author Gabriel Liwerant
  */
-class Xml
+class Xml implements ApplicationStorageInterface
 {
 	/**
 	 * Error codes for Xml
@@ -24,6 +24,7 @@ class Xml
 	const XML_NOT_INSTANCE_OF_SIMPLE_XML_ELEMENT	= 1001;
 	const INVALID_XML_FILE							= 1002;
 	const COULD_NOT_CONVERT_TO_BOOELAN				= 1003;
+	const FILE_DOES_NOT_EXIST						= 1004;
 	
 	/**
 	 * Stores array of arrays for xml files with their associated data.
@@ -46,6 +47,8 @@ class Xml
 	 * @param string $file_path
 	 * 
 	 * @todo consider logging errors without coupling logger class
+	 * @deprecated consider removing in favor of well formed checking since 
+	 *		there are issues the the implementation of this method.
 	 * 
 	 * @return boolean 
 	 */
@@ -85,7 +88,7 @@ class Xml
 	 * Converts SimpleXMLElement object to an array using recursion to loop
 	 * through all the nested objects.
 	 *
-	 * @param SimpleXMLElement $xml
+	 * @param SimpleXMLElement object $xml
 	 * 
 	 * @return array 
 	 */
@@ -94,7 +97,6 @@ class Xml
 		if ($xml instanceof SimpleXMLElement)
 		{
 			$children	= $xml->children();			
-			//$xml_arr	= null; // Is there a way we can end without an initialized array?
 		}
 		else
 		{
@@ -163,12 +165,18 @@ class Xml
 	}
 	
 	/**
-	 * Placeholder until we have a working method. For now, use Json if this 
-	 * functionality is required.
+	 * Encode a simple string as XML.
+	 * 
+	 * @todo make functional for array with recursion
+	 * @todo method needs to be tested
+	 * 
+	 * @param string $value
 	 */
-	public function getEncodedDataAsString()
+	public function getEncodedDataAsString($value)
 	{
-		throw ApplicationFactory::makeException('Xml Exception: ' . __METHOD__ . ' not yet built.');
+		return '&lt;root&gt;' . $value . '&lt;/root&gt;';
+		
+		//throw ApplicationFactory::makeException('Xml Exception: ' . __METHOD__ . ' not yet built.');
 		//throw new Exception('Xml Exception: ' . __METHOD__ . ' not yet built.');
 	}
 	
@@ -178,12 +186,16 @@ class Xml
 	 * @param string $path Path to the XML file we want data from
 	 * @param string $key Allows us to set a name for the XML array
 	 * 
-	 * @return object Json
+	 * @return object Xml
 	 */
 	public function setFileAsArray($path, $key)
 	{
-		//$file_path = XML_PATH . '/' . $file_name . '.xml';
-
+		if ( ! file_exists($path))
+		{
+			throw ApplicationFactory::makeException('Xml Exception', self::FILE_DOES_NOT_EXIST);
+			//throw new Exception('Xml Exception', self::FILE_DOES_NOT_EXIST);
+		}
+		
 		$this->_xml[$key] = $this->getXmlDecode($path);
 		
 		return $this;
@@ -216,6 +228,9 @@ class Xml
 	 * attempt to pass "true" and "false" and this function will convert them to 
 	 * their intended boolean. Use with care.
 	 *
+	 * @deprecated method is dangerous and unnecessary, we should use 0 | 1 and 
+	 *		cast them as boolean instead
+	 * 
 	 * @param string $psuedo_boolean String we attempt to convert to boolean
 	 * 
 	 * @return boolean Successfully converted boolean value
