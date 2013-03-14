@@ -145,30 +145,27 @@ class View
 	}
 	
 	/**
-	 * Builds the HTML for a favicon.
+	 * Build HTML head links from data.
 	 *
-	 * @param array $favicon_data Data used to build favicon
-	 * @param string|void $cache_buster Optional string to force re-caching
+	 * @param string $rel
+	 * @param string $href
+	 * @param array|void $attribute_data
+	 * @param string|void $cache_buster
 	 * 
-	 * @return string Built HTML for favicon
+	 * @return string HTML
 	 */
-	public function buildFavicon($favicon_data, $cache_buster = null)
+	public function buildHeadLink($rel, $href, $attribute_data = null, $cache_buster = null)
 	{
-		if ((boolean)$favicon_data['is_internal'])
+		$attribute_list = null;
+		
+		if ( ! empty($attribute_data))
 		{
-			$favicon = '<link href="' . IMAGES_PATH . '/favicon.ico' . $cache_buster . '" rel="shortcut icon" />';
-		}
-		else
-		{
-			$favicon = '<link href="' . $favicon_data['href'] . $cache_buster . '" rel="shortcut icon" />';
+			$attribute_list = ' ' . $this->_buildAttributeList($attribute_data);
 		}
 		
-		if ($favicon_data['ie_conditional'] !== '')
-		{
-			$favicon = $this->_buildIeConditional($favicon_data['ie_conditional'], $favicon);
-		}
-        
-        return $favicon;
+		$link = '<link rel="' . $rel . '" href="' . $href . $cache_buster . '"' . $attribute_list . '/>';
+		
+		return $link;
 	}
 	
 	/**

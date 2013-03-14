@@ -150,21 +150,6 @@ class Controller
 
 		return $this->_setViewProperty('css', $property_data);
 	}
-	
-	/**
-	 * Sets the favicon in the appropriate view property.
-	 *
-	 * @param array $favicon_data Data used to build favicon
-	 * @param string $cache_buster Optional random string to force re-caching
-	 * 
-	 * @return object Controller
-	 */
-	private function _setHeadIncludesFavicon($favicon_data, $cache_buster)
-	{
-		$property_data = $this->_view->buildFavicon($favicon_data, $cache_buster);
-		
-		return $this->_setViewProperty('favicon', $property_data);
-	}
 
 	/**
 	 * Set a view property for JavaScript script tags.
@@ -186,7 +171,45 @@ class Controller
 		
 		return $this->_setViewProperty($property, $property_data);
 	}	
+	
+	/**
+	 * Set view property for head links with built HTML.
+	 *
+	 * @param array $link_data
+	 * @param string $cache_buster
+	 * 
+	 * @return object Controller 
+	 */
+	protected function _setHeadIncludesLink($link_data, $cache_buster)
+	{
+		$links = null;
+		
+		foreach ($link_data as $property_name => $data)
+		{		
+			if (isset($data['attributes']))
+			{
+				$attribute_data = $data['attributes'];
+			}
+			else
+			{
+				$attribute_data = null;
+			}		
 
+			if ((boolean)$data['is_image'])
+			{
+				$href = IMAGES_PATH . '/' . $data['href'];
+			}
+			else
+			{
+				$href = $data['href'];
+			}
+			
+			$links .= $this->_view->buildHeadLink($data['rel'], $href, $attribute_data, $cache_buster);
+		}
+		
+		return $this->_setViewProperty('head_links', $links);
+	}
+	
 	/**
 	 * Setter for the title page view property
 	 *
@@ -405,7 +428,6 @@ class Controller
 			->_setHeadDoc($data['head']['head_doc'])
 			->_setHeadMeta($data['head']['head_meta'])
 			->_setHeadIncludesCss($data['head']['head_includes']['head_css'], $cache_buster)
-			->_setHeadIncludesFavicon($data['head']['head_includes']['favicon'], $cache_buster)
 			->_setJs('head_js', $data['head']['head_includes']['head_js'], $cache_buster)
 			->_setJs('footer_js', $data['footer']['footer_js'], $cache_buster);
 
