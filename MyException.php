@@ -66,13 +66,17 @@ class MyException extends Exception
 	/**
 	 * Create error logs for exceptions.
 	 *
-	 * @param object $log Log object
 	 * @param object $exception Exception object to use for logging
 	 * 
 	 * @return object MyException
 	 */
-	private function _createLog($log, $exception)
+	public function createLog($exception)
 	{
+		if ( ! IS_MODE_LOGGING)
+		{
+			return $this;
+		}
+		
 		$log_data['message']	= $exception->getMessage();
 		$log_data['code']		= $exception->getCode();
 		$log_data['file']		= $exception->getFile();
@@ -87,7 +91,7 @@ class MyException extends Exception
 
 		$log_message = rtrim($log_message, ', ');
 
-		$log->writeLogToFile($log_message, 'exception', 'exceptionLog');
+		$this->_logger->writeLogToFile($log_message, 'exception', 'exceptionLog');
 		
 		return $this;
 	}
@@ -97,12 +101,9 @@ class MyException extends Exception
 	 */
 	public function caughtException()
 	{				
-		if (IS_MODE_LOGGING)
-		{
-			$this->_createLog($this->_logger, $this);
-		}
-	
-		$this->exception_msg = 'Caught ' . $this->getMessage() . '. Exception code: #' . $this->getCode();
+		$this
+			->createLog($this)
+			->exception_msg = 'Caught ' . $this->getMessage() . '. Exception code: #' . $this->getCode();
 		
 		require_once TEMPLATE_PATH	. '/exception.php';
 	}
@@ -114,12 +115,9 @@ class MyException extends Exception
 	 */
 	public function uncaughtException($e)
 	{
-		if (IS_MODE_LOGGING)
-		{
-			$this->_createLog($this->_logger, $e);
-		}
-		
-		$this->exception_msg = 'Uncaught ' . $e->getMessage() . '. Exception code: #' . $e->getCode();
+		$this
+			->createLog($e)
+			->exception_msg = 'Uncaught ' . $e->getMessage() . '. Exception code: #' . $e->getCode();
 		
 		require_once TEMPLATE_PATH	. '/exception.php';
 	}
