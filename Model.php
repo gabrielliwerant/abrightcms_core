@@ -64,7 +64,7 @@ class Model
 	 * @param object $logger_obj
 	 * @param object|void $db
 	 */
-	public function __construct($storage_obj, $storage_type, $logger_obj, $db = null)
+	public function __construct(ApplicationStorageInterface $storage_obj, $storage_type, $logger_obj, $db = null)
 	{
 		$this->_setStorageObject($storage_obj)->_setLogger($logger_obj)->_setDatabase($db);
 
@@ -146,20 +146,6 @@ class Model
 	}
 	
 	/**
-	 * Builds log message from data and sends to log for writing.
-	 *
-	 * @param string $msg
-	 * @param string $type
-	 * @param string $file_name
-	 * 
-	 * @return boolean Success or failure of log writing
-	 */
-	protected function _writeLog($msg, $type, $file_name)
-	{
-		return $this->_logger->writeLogToFile($msg, $type, $file_name);
-	}
-	
-	/**
 	 * Create a log message from an array of data.
 	 *
 	 * @param array $data_to_log
@@ -178,6 +164,20 @@ class Model
 		$log_msg = rtrim($log_msg, ', ');
 		
 		return $log_msg;
+	}
+	
+	/**
+	 * Builds log message from data and sends to log for writing.
+	 *
+	 * @param string $msg
+	 * @param string $type
+	 * @param string $file_name
+	 * 
+	 * @return boolean Success or failure of log writing
+	 */
+	protected function _writeLog($msg, $type, $file_name)
+	{
+		return $this->_logger->writeLogToFile($msg, $type, $file_name);
 	}
 	
 	/**
@@ -244,12 +244,11 @@ class Model
 	}
 	
 	/**
+	 * Retrieve a string value encoded in our storage format.
 	 *
-	 * @param type $string
+	 * @param string $string
 	 * 
-	 * @todo must generalize encoding function names, or this method lies
-	 * 
-	 * @return type 
+	 * @return string JSON | XML formatted
 	 */
 	public function getEncodedStringInStorageFormat($string)
 	{
