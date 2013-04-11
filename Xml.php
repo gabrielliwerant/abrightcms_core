@@ -25,6 +25,7 @@ class Xml implements ApplicationStorageInterface
 	const INVALID_XML_FILE							= 1002;
 	const COULD_NOT_CONVERT_TO_BOOELAN				= 1003;
 	const FILE_DOES_NOT_EXIST						= 1004;
+	const FILE_IS_NOT_READABLE						= 1005;
 	
 	/**
 	 * Stores array of arrays for xml files with their associated data.

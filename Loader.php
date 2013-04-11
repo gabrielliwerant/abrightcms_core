@@ -59,7 +59,7 @@ class Loader
 	 * 
 	 * @return boolean 
 	 */
-	public static function isFilePathValid($file_path)
+	private static function _isFilePathValid($file_path)
 	{
 		if (file_exists($file_path))
 		{
@@ -78,7 +78,7 @@ class Loader
 	 * 
 	 * @return array Return null if no appropriate directories were found
 	 */
-	public static function getSubdirectoryArrayFromFilePath($path)
+	private static function _getSubdirectoryArrayFromFilePath($path)
 	{
 		$handle	= opendir($path);
 		
@@ -121,9 +121,11 @@ class Loader
 	 *
 	 * @param string $string
 	 * 
+	 * @todo currently unused, consider deprecating
+	 * 
 	 * @return string 
 	 */
-	public static function convertFirstCharacterToLowerCase($string)
+	private static function _convertFirstCharacterToLowerCase($string)
 	{
 		return strtolower(substr($string, 0, 1)) . substr($string, 1);
 	}
@@ -137,7 +139,7 @@ class Loader
 	 * 
 	 * @return string 
 	 */
-	public static function buildFilePath($directory_arr, $file_name)
+	private static function _buildFilePath($directory_arr, $file_name)
 	{
 		$path = null;
 		
@@ -159,11 +161,11 @@ class Loader
 	 * @todo PHP < 5.3 throws a fit if our case doesn't match the file name 
 	 *		exactly. We need a way to deal with that.
 	 */
-	public static function load($directory_arr, $file_name)
+	private static function _load($directory_arr, $file_name)
 	{
-		$file_path = self::buildFilePath($directory_arr, $file_name);
+		$file_path = self::_buildFilePath($directory_arr, $file_name);
 
-		if (self::isFilePathValid($file_path))
+		if (self::_isFilePathValid($file_path))
 		{
 			require $file_path;
 		}
@@ -196,18 +198,18 @@ class Loader
 		{
 			if ($main_dir['search_sub_dir'])
 			{
-				$sub_dir_arr = self::getSubdirectoryArrayFromFilePath($main_dir['path']);
+				$sub_dir_arr = self::_getSubdirectoryArrayFromFilePath($main_dir['path']);
 				
 				if ( ! empty($sub_dir_arr))
 				{			
 					foreach ($sub_dir_arr as $sub_dir)
 					{
-						self::load(array($main_dir['path'], $sub_dir), $class_name);
+						self::_load(array($main_dir['path'], $sub_dir), $class_name);
 					}
 				}
 			}
 
-			self::load(array($main_dir['path']), $class_name);
+			self::_load(array($main_dir['path']), $class_name);
 		}
 	}
 	
