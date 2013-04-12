@@ -268,7 +268,7 @@ class View
 		
 		foreach ($list_data as $text => $path)
 		{
-			$list_items .= $this->buildListItem($this->buildAnchorTag($text, $path, false));
+			$list_items .= $this->buildGenericHtmlWrapper('li', $this->buildAnchorTag($text, $path, false));
 		}
 		
 		$list = '<div class="link-column"><p>' . $list_name . '</p><ul>' . $list_items . '</ul></div>';
