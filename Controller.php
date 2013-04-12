@@ -279,6 +279,75 @@ class Controller
 		
 		return $this->_setViewProperty($nav_property, $property_data);
     }
+
+	/**
+	 * Set sub navigation into view property.
+	 * 
+	 * Finds all the content files corresponding to the sub section, loop
+	 * through them to prepare the necessary data for the navigation, and then
+	 * build the navigation items for display.
+	 *
+	 * @param string $sub_directory Directory where the files are
+	 * @param string $storage_type Determines type of files
+	 * @param string $sub_section_title Current section title to compare
+	 * 
+	 * @return object Controller 
+	 */
+	protected function _setSubNav($sub_directory, $storage_type, $api_path, $sub_section_title)
+	{
+		switch ($storage_type)
+		{
+			case 'json'	:
+				$dir = JSON_PATH . $sub_directory;
+				break;
+			case 'xml'	:
+				$dir = XML_PATH . $sub_directory;
+				break;
+		}
+		
+		$file_arr = scandir($dir);
+			
+		foreach ($file_arr as $file)
+		{
+			if (preg_match('/\.' . $storage_type . '/', $file))
+			{
+				$file_name		= explode('.', $file);
+				$full_path		= $dir . '/' . $file;
+				$file_key		= 'title_' . $file_name[0];
+								
+				$this->_model->setDataFromStorage($full_path, $file_key);
+				
+				$sub_content	= $this->_model->getDataFromStorage($file_key);				
+				$partial_href	= $api_path . $file_name[0];
+				
+				// Use ordering provided for array keys so we can later sort
+				$nav_arr_to_build[(int)$sub_content['ordering']] = array(
+					'partial_href'	=> $partial_href, 
+					'title'			=> $sub_content['title']
+				);
+			}
+		}
+		
+		ksort($nav_arr_to_build);
+		$this->_view->sub_nav	= null;
+		
+		foreach ($nav_arr_to_build as $nav)
+		{
+			if ($nav['title'] === $sub_section_title)
+			{
+				$class = 'active';
+			}
+			else
+			{
+				$class = null;
+			}
+			
+			$nav_item				= $this->_view->buildAnchorTag($nav['title'], $nav['partial_href'], true, '_self', null, $class);
+			$this->_view->sub_nav	.= $this->_view->buildNav($nav_item, null);
+		}
+		
+		return $this;
+	}
 	
 	/**
 	 * Set the view property for the rendering of the logo.
