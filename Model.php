@@ -21,6 +21,11 @@
 class Model
 {
 	/**
+	 * Error codes for Model
+	 */
+	const UNKNOWN_STORAGE_TYPE	= 1001;
+	
+	/**
 	 * Holds an instance of the storage object.
 	 *
 	 * @var object $_storage
@@ -66,19 +71,11 @@ class Model
 	 */
 	public function __construct(ApplicationStorageInterface $storage_obj, $storage_type, $logger_obj, $db = null)
 	{
-		$this->_setStorageObject($storage_obj)->_setLogger($logger_obj)->_setDatabase($db);
-
-		$storage_type = strtolower($storage_type);
-		
-		switch ($storage_type)
-		{
-			case 'json' :
-				$this->setFilesFromDirectoryIntoStorage(JSON_PATH, $storage_type);
-				break;
-			case 'xml' :
-				$this->setFilesFromDirectoryIntoStorage(XML_PATH, $storage_type);
-				break;
-		}
+		$this
+			->_setStorageObject($storage_obj)
+			->_setLogger($logger_obj)
+			->_setDatabase($db)
+			->setFilesFromDirectoryIntoStorage($this->getStorageTypePath($storage_type), $storage_type);
 	}
 	
 	/**
@@ -199,11 +196,35 @@ class Model
 				$file_name	= explode('.', $file);
 				$file_path	= $dir . '/' . $file;
 				
-				$this->setDataFromStorage($file_path, $file_name[0]);
+				$this->setDataIntoStorage($file_path, $file_name[0]);
 			}
 		}
 		
 		return $this;
+	}
+	
+	/**
+	 * Gets all files from a given directory as an associative array.
+	 *
+	 * @param string $dir
+	 * @param string $file_type
+	 * 
+	 * @return array 
+	 */
+	public function getStorageFilesFromDirectory($dir, $file_type)
+	{
+		$file_arr = scandir($dir);		
+		
+		foreach ($file_arr as $file)
+		{
+			if (preg_match('/\.' . $file_type . '/', $file))
+			{
+				$file_name						= explode('.', $file);
+				$series_of_files[$file_name[0]]	= $this->getDataFromStorage($file_name[0]);
+			}
+		}
+		
+		return $series_of_files;
 	}
 	
 	/**
@@ -214,7 +235,7 @@ class Model
 	 * 
 	 * @return object Model
 	 */
-	public function setDataFromStorage($data_file_path, $key)
+	public function setDataIntoStorage($data_file_path, $key)
 	{
 		$this->_storage->setFileAsArray($data_file_path, $key);
 		
@@ -410,7 +431,35 @@ class Model
 		}
 
 		return $is_successful;
-	}	
+	}
+	
+	/**
+	 * Gets the appropriate path constant based on the storage type.
+	 *
+	 * @param string $storage_type
+	 * 
+	 * @return string 
+	 */
+	public function getStorageTypePath(&$storage_type)
+	{
+		$storage_type = strtolower($storage_type);
+		
+		switch ($storage_type)
+		{
+			case 'json':
+				$path = JSON_PATH;
+				break;
+			case 'xml':
+				$path = XML_PATH;
+				break;
+			default:
+				throw ApplicationFactory::makeException('Model Exception', self::UNKNOWN_STORAGE_TYPE);
+				//throw new Exception('Model Exception', self::UNKNOWN_STORAGE_TYPE);
+				break;
+		}
+		
+		return $path;
+	}
 }
 // End of Model Class
 

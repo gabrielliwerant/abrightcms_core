@@ -288,52 +288,25 @@ class Controller
 	 * build the navigation items for display.
 	 *
 	 * @param string $sub_directory Directory where the files are
-	 * @param string $storage_type Determines type of files
+	 * @param string $storage_type Type of files for pathing, file reading
+	 * @param string $api_path Used to build href
 	 * @param string $sub_section_title Current section title to compare
 	 * 
 	 * @return object Controller 
 	 */
 	protected function _setSubNav($sub_directory, $storage_type, $api_path, $sub_section_title)
 	{
-		switch ($storage_type)
-		{
-			case 'json'	:
-				$dir = JSON_PATH . $sub_directory;
-				break;
-			case 'xml'	:
-				$dir = XML_PATH . $sub_directory;
-				break;
-		}
+		$dir = $this->_model->getStorageTypePath($storage_type) . $sub_directory;		
+		$this->_model->setFilesFromDirectoryIntoStorage($dir, $storage_type);
 		
-		$file_arr = scandir($dir);
-			
-		foreach ($file_arr as $file)
-		{
-			if (preg_match('/\.' . $storage_type . '/', $file))
-			{
-				$file_name		= explode('.', $file);
-				$full_path		= $dir . '/' . $file;
-				$file_key		= 'title_' . $file_name[0];
-								
-				$this->_model->setDataFromStorage($full_path, $file_key);
-				
-				$sub_content	= $this->_model->getDataFromStorage($file_key);				
-				$partial_href	= $api_path . $file_name[0];
-				
-				// Use ordering provided for array keys so we can later sort
-				$nav_arr_to_build[(int)$sub_content['ordering']] = array(
-					'partial_href'	=> $partial_href, 
-					'title'			=> $sub_content['title']
-				);
-			}
-		}
+		$dir_files_arr		= $this->_model->getStorageFilesFromDirectory($dir, $storage_type);
+		$nav_arr_to_build	= $this->_model->getSortedSubNavArray($dir_files_arr, $api_path);
 		
-		ksort($nav_arr_to_build);
 		$this->_view->sub_nav	= null;
-		
+
 		foreach ($nav_arr_to_build as $nav)
 		{
-			if ($nav['title'] === $sub_section_title)
+			if ($nav['nav'] === $sub_section_title)
 			{
 				$class = 'active';
 			}
@@ -342,7 +315,7 @@ class Controller
 				$class = null;
 			}
 			
-			$nav_item				= $this->_view->buildAnchorTag($nav['title'], $nav['partial_href'], true, '_self', null, $class);
+			$nav_item				= $this->_view->buildAnchorTag($nav['nav'], $nav['partial_href'], true, '_self', null, $class);
 			$this->_view->sub_nav	.= $this->_view->buildNav($nav_item, null);
 		}
 		
