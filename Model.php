@@ -337,6 +337,8 @@ class Model
 	 */
 	public function sanitizeData($data)
 	{
+		$clean_data = null;
+		
 		if (is_array($data))
 		{
 			foreach ($data as $key => $value)
