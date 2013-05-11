@@ -220,11 +220,18 @@ class Controller
 	 * 
 	 * @return object Controller 
 	 */
-	protected function _setTitleSubpage($sub_title, $separator = null)
+	protected function _setTitleSubPage($submenu, $sub_title, $separator = null)
 	{
-		$sub_title = $this->_view->buildTitleSubpage($sub_title, $separator);
+		if ( ! empty($sub_title))
+		{
+			$built_sub_title = $this->_view->buildTitleSubpage($submenu[$sub_title], $separator);
 
-		return $this->_setViewProperty('title_subpage', $sub_title);
+			return $this->_setViewProperty('title_subpage', $built_sub_title);
+		}
+		else
+		{
+			return $this;
+		}
 	}
 	
     /**
@@ -290,18 +297,17 @@ class Controller
 	 * build the navigation items for display.
 	 *
 	 * @param string $sub_directory Directory where the files are
-	 * @param string $storage_type Type of files for pathing, file reading
 	 * @param string $api_path Used to build href
 	 * @param string $sub_section_title Current section title to compare
 	 * 
 	 * @return object Controller 
 	 */
-	protected function _setSubNav($sub_directory, $storage_type, $api_path, $sub_section_title)
+	protected function _setSubNav($sub_directory, $api_path, $sub_section_title)
 	{
-		$dir = $this->_model->getStorageTypePath($storage_type) . $sub_directory;		
-		$this->_model->setFilesFromDirectoryIntoStorage($dir, $storage_type);
+		$dir = $this->_model->getStorageTypePath(STORAGE_TYPE) . $sub_directory;
+		$this->_model->setFilesFromDirectoryIntoStorage($dir, STORAGE_TYPE);
 		
-		$dir_files_arr		= $this->_model->getStorageFilesFromDirectory($dir, $storage_type);
+		$dir_files_arr		= $this->_model->getStorageFilesFromDirectory($dir, STORAGE_TYPE);
 		$nav_arr_to_build	= $this->_model->getSortedSubNavArray($dir_files_arr, $api_path);
 		
 		$this->_view->sub_nav	= null;
@@ -462,11 +468,12 @@ class Controller
 	 * as view properties for viewing.
 	 * 
 	 * @param array $data From storage to build out view properties
+	 * @param string $child_class_name
 	 * @param string $cache_buster Allows us to force re-caching
 	 * 
 	 * @return object Controller 
 	 */
-	protected function _pageBuilder($data, $cache_buster)
+	protected function _pageBuilder($data, $child_class_name, $cache_buster)
 	{
 		$this
 			->_setHeadDoc($data['head']['head_doc'])
@@ -489,7 +496,9 @@ class Controller
 	 */
 	public function render($page_name)
 	{
-		$this->_setViewProperty('page', $page_name)->_view->renderPage($page_name);
+		$this
+			->_setViewProperty('page', $page_name)
+			->_view->renderPage($page_name);
 	}
 }
 // End of Controller Class
