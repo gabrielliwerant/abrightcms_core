@@ -191,7 +191,7 @@ class Model
 		
 		foreach ($file_arr as $file)
 		{
-			if (preg_match('/\.' . $file_type . '/', $file))
+			if (preg_match('/\.' . strtolower($file_type) . '/', $file))
 			{
 				$file_name	= explode('.', $file);
 				$file_path	= $dir . '/' . $file;
@@ -214,16 +214,16 @@ class Model
 	public function getStorageFilesFromDirectory($dir, $file_type)
 	{
 		$file_arr = scandir($dir);		
-		
+
 		foreach ($file_arr as $file)
 		{
-			if (preg_match('/\.' . $file_type . '/', $file))
+			if (preg_match('/\.' . strtolower($file_type) . '/', $file))
 			{
-				$file_name						= explode('.', $file);
-				$series_of_files[$file_name[0]]	= $this->getDataFromStorage($file_name[0]);
+				$file_name = explode('.', $file);
+				$series_of_files[$file_name[0]] = $this->getDataFromStorage($file_name[0]);
 			}
 		}
-		
+
 		return $series_of_files;
 	}
 	
@@ -388,7 +388,7 @@ class Model
 			->setSubject($subject)
 			->setReplyTo($reply_to)
 			->setEmailAddress($address);
-		
+
 		return $this;
 	}
 	
@@ -440,7 +440,7 @@ class Model
 	 * 
 	 * @return string 
 	 */
-	public function getStorageTypePath(&$storage_type)
+	public function getStorageTypePath($storage_type)
 	{
 		$storage_type = strtolower($storage_type);
 		
