@@ -51,7 +51,7 @@ class Loader
 	{
 		self::$path = $path_arr;
 	}
-	
+		
 	/**
 	 * Validate that our file path is accurate.
 	 *
@@ -100,14 +100,7 @@ class Loader
 
 			closedir($handle);
 			
-			if (isset($directory_arr))
-			{
-				return $directory_arr;
-			}
-			else
-			{
-				return null;
-			}
+			return isset($directory_arr) ? $directory_arr : null;
 		}
 		else
 		{
@@ -117,19 +110,26 @@ class Loader
 	}
 	
 	/**
-	 * PHP 5.2 safe way to convert first character in a string to lower case.
+	 * Search through all subdirectories in a given path recursively until no
+	 * more are found and then attempt to load the class from the final leaf.
 	 *
-	 * @param string $string
-	 * 
-	 * @todo currently unused, consider deprecating
-	 * 
-	 * @return string 
+	 * @param string $path
+	 * @param string $class_name
 	 */
-	private static function _convertFirstCharacterToLowerCase($string)
+	private static function _loadFromSubdirectory($path, $class_name)
 	{
-		return strtolower(substr($string, 0, 1)) . substr($string, 1);
+		$sub_dir_arr = self::_getSubdirectoryArrayFromFilePath($path);
+
+		if ( ! empty($sub_dir_arr))
+		{
+			foreach ($sub_dir_arr as $sub_dir)
+			{
+				self::_loadFromSubdirectory($path . '/' . $sub_dir, $class_name);
+				self::_load(array($path, $sub_dir), $class_name);
+			}
+		}
 	}
-	
+		
 	/**
 	 * From an array of directories listed outermost to innermost, built the
 	 * appropriate file path for our class name.
@@ -157,59 +157,19 @@ class Loader
 	 *
 	 * @param array $directory_arr
 	 * @param string $file_name 
-	 * 
-	 * @todo PHP < 5.3 throws a fit if our case doesn't match the file name 
-	 *		exactly. We need a way to deal with that.
 	 */
 	private static function _load($directory_arr, $file_name)
 	{
+		if (PHP_VERSION < 5.3)
+		{
+			$file_name = self::convertFirstCharacterToLowerCase($file_name);
+		}
+		
 		$file_path = self::_buildFilePath($directory_arr, $file_name);
 
 		if (self::_isFilePathValid($file_path))
 		{
 			require $file_path;
-		}
-		/* else
-		{
-			$file_name = self::convertFirstCharacterToLowerCase($file_name);
-			$file_path = self::buildFilePath($directory_arr, $file_name);
-			
-			if (self::isFilePathValid($file_path))
-			{
-				require $file_path;
-			}
-		} */
-	}
-	
-	/**
-	 * The method to find the proper paths for autoloading our classes.
-	 * 
-	 * We run through the list of paths given in the class property, check
-	 * subdirectories of those, and attempt to build the full class path to load.
-	 * 
-	 * @param string $class_name
-	 * 
-	 * @todo handle directories in recursive fashion so that we are not limited
-	 *		to a single subdirectory when searching.
-	 */
-	public static function autoload($class_name)
-	{
-		foreach (self::$path as $main_dir)
-		{
-			if ($main_dir['search_sub_dir'])
-			{
-				$sub_dir_arr = self::_getSubdirectoryArrayFromFilePath($main_dir['path']);
-				
-				if ( ! empty($sub_dir_arr))
-				{			
-					foreach ($sub_dir_arr as $sub_dir)
-					{
-						self::_load(array($main_dir['path'], $sub_dir), $class_name);
-					}
-				}
-			}
-
-			self::_load(array($main_dir['path']), $class_name);
 		}
 	}
 	
@@ -227,6 +187,42 @@ class Loader
 		self::$path[$key] = $path;
 		
 		return $this;
+	}
+	
+	/**
+	 * The method to find the proper paths for autoloading our classes.
+	 * 
+	 * We run through the list of paths given in the class property, check
+	 * subdirectories of those, and attempt to build the full class path to load.
+	 * 
+	 * @param string $class_name
+	 */
+	public static function autoload($class_name)
+	{
+		foreach (self::$path as $main_dir)
+		{
+			if ($main_dir['search_sub_dir'])
+			{
+				self::_loadFromSubdirectory($main_dir['path'], $class_name);
+			}
+
+			self::_load(array($main_dir['path']), $class_name);
+		}
+	}
+
+	/**
+	 * PHP 5.2 safe way to convert first character in a string to lower case.
+	 * 
+	 * This is useful for loading classes in lower PHP versions as PHP 5.2 likes 
+	 * to throw a tantrum over case when loading classes.
+	 *
+	 * @param string $string
+	 * 
+	 * @return string 
+	 */
+	public static function _convertFirstCharacterToLowerCase($string)
+	{
+		return strtolower(substr($string, 0, 1)) . substr($string, 1);
 	}
 }
 // End of Loader Class

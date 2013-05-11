@@ -75,12 +75,12 @@ final class Application
 	private $_parameter = array();
 	
 	/**
-	 * We are sad if new bootstrap object doesn't load the application, so we
+	 * We are sad if new application object doesn't load the application, so we
 	 * make sure it does what it must to find the controller and set and load 
 	 * dependencies.
 	 * 
-	 * Upon construction, we ultimately set the URL, controller, method, and 
-	 * parameters. Then we send them to the router.
+	 * Upon construction, we set the URL, controller, method, and parameters. 
+	 * Then we send them to the router API.
 	 * 
 	 * @param object $application_factory Application factory object
 	 * @param array $get_data Loads data from the URL query string
@@ -264,7 +264,8 @@ final class Application
 			}
 			else
 			{
-				$this->_errorControllerHandler('404')
+				$this
+					->_errorControllerHandler('404')
 					->_router($this->_controller, $this->_method, $this->_parameter);
 			}
 		}
@@ -338,7 +339,8 @@ final class Application
 		}
 		else
 		{
-			$this->_errorControllerHandler('404', $method)
+			$this
+				->_errorControllerHandler('404', $method)
 				->_router($this->_controller, $this->_method, $this->_parameter);
 		}
 		
