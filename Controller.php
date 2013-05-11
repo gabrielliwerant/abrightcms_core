@@ -44,7 +44,9 @@ class Controller
 	 */
 	public function __construct($model, $view)
 	{
-		$this->_setModel($model)->_setView($view);
+		$this
+			->_setModel($model)
+			->_setView($view);
 	}
 	
 	/**
