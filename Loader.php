@@ -162,7 +162,7 @@ class Loader
 	{
 		if (PHP_VERSION < 5.3)
 		{
-			$file_name = self::convertFirstCharacterToLowerCase($file_name);
+			//$file_name = self::convertFirstCharacterToLowerCase($file_name);
 		}
 		
 		$file_path = self::_buildFilePath($directory_arr, $file_name);
@@ -213,8 +213,8 @@ class Loader
 	/**
 	 * PHP 5.2 safe way to convert first character in a string to lower case.
 	 * 
-	 * This is useful for loading classes in lower PHP versions as PHP 5.2 likes 
-	 * to throw a tantrum over case when loading classes.
+	 * @todo figure out if we can use this to prevent PHP 5.2 throwing a tantrum 
+	 *		over case when loading classes.
 	 *
 	 * @param string $string
 	 * 

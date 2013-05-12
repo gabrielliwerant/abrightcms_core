@@ -242,8 +242,6 @@ final class Application
 	 * @param string $url User-entered URL to check
 	 * 
 	 * @return object Application
-	 * 
-	 * @todo make this recursive, clean up method
 	 */
 	private function _setController($url)
 	{
