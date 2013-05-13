@@ -91,7 +91,7 @@ class Loader
 				$is_license	= strstr($directory, 'LICENSE');
 				
 				// We don't want anything with a period, as it's either a single
-				// file or the period only directories.
+				// file or the period-only directories.
 				if ( ! $has_period AND ! $is_license)
 				{
 					$directory_arr[] = $directory;
@@ -131,15 +131,18 @@ class Loader
 	}
 		
 	/**
-	 * From an array of directories listed outermost to innermost, built the
-	 * appropriate file path for our class name.
+	 * From an array of directories listed outermost to innermost, build the
+	 * appropriate file path array for our class name.
 	 *
+	 * We use a file path array so that we can try multiple path variations to
+	 * accommodate alternate file names or case issues.
+	 * 
 	 * @param array $directory_arr
 	 * @param string $file_name
 	 * 
-	 * @return string 
+	 * @return array 
 	 */
-	private static function _buildFilePath($directory_arr, $file_name)
+	private static function _buildFilePathArray($directory_arr, $file_name)
 	{
 		$path = null;
 		
@@ -148,7 +151,23 @@ class Loader
 			$path .= $directory . '/';
 		}
 		
-		return $path . $file_name . '.php';
+		$possible_path_arr = array(
+			$path . $file_name . '.php',
+			$path . $file_name . '.inc.php'
+		);
+		
+		if (PHP_VERSION < 5.3)
+		{
+			$file_name = self::convertFirstCharacterToLowerCase($file_name);
+			
+			array_push(
+				$possible_path_arr,
+				$path . $file_name . '.php',
+				$path . $file_name . '.inc.php'
+			);
+		}
+		
+		return $possible_path_arr;
 	}
 	
 	/**
@@ -160,16 +179,16 @@ class Loader
 	 */
 	private static function _load($directory_arr, $file_name)
 	{
-		if (PHP_VERSION < 5.3)
-		{
-			//$file_name = self::convertFirstCharacterToLowerCase($file_name);
-		}
+		$file_path_arr = self::_buildFilePathArray($directory_arr, $file_name);
 		
-		$file_path = self::_buildFilePath($directory_arr, $file_name);
-
-		if (self::_isFilePathValid($file_path))
-		{
-			require $file_path;
+		foreach ($file_path_arr as $file_path)
+		{		
+			if (self::_isFilePathValid($file_path))
+			{
+				require $file_path;
+				
+				break;
+			}
 		}
 	}
 	
@@ -177,14 +196,16 @@ class Loader
 	 * Set additional paths for our autoloader to call upon. Useful for 
 	 * assigning conditional paths after construction, like development paths.
 	 *
-	 * @param string $key
 	 * @param string $path 
 	 * 
 	 * return object Loader
 	 */
-	public function setAdditionalPath($key, $path)
+	public function setAdditionalPath($path_arr)
 	{
-		self::$path[$key] = $path;
+		foreach ($path_arr as $key => $path)
+		{
+			self::$path[$key] = $path;
+		}
 		
 		return $this;
 	}
@@ -212,9 +233,6 @@ class Loader
 
 	/**
 	 * PHP 5.2 safe way to convert first character in a string to lower case.
-	 * 
-	 * @todo figure out if we can use this to prevent PHP 5.2 throwing a tantrum 
-	 *		over case when loading classes.
 	 *
 	 * @param string $string
 	 * 
