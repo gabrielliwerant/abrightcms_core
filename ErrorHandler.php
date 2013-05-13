@@ -36,14 +36,25 @@ class ErrorHandler
 	private $_email;
 	
 	/**
+	 * Stores error messages we wish to ignore
+	 *
+	 * @var array $_ignore_messages
+	 */
+	private $_ignore_messages = array();
+	
+	/**
 	 * Upon construction, pass in dependencies
 	 *
 	 * @param object $log 
 	 * @param object $email 
+	 * @param array|void $ignore_messages
 	 */
-	public function __construct(Logger $log, Email $email)
+	public function __construct(Logger $log, Email $email, $ignore_messages = null)
 	{
-		$this->_setLog($log)->_setEmail($email);
+		$this
+			->_setLog($log)
+			->_setEmail($email)
+			->_setIgnoreMessages($ignore_messages);
 	}
 
 	/**
@@ -70,6 +81,20 @@ class ErrorHandler
 	private function _setEmail($email)
 	{
 		$this->_email = $email;
+		
+		return $this;
+	}
+	
+	/**
+	 * Setter for error messages to ignore
+	 *
+	 * @param array $ignore_messages
+	 * 
+	 * @return object ErrorHandler 
+	 */
+	private function _setIgnoreMessages($ignore_messages)
+	{
+		$this->_ignore_messages = $ignore_messages;
 		
 		return $this;
 	}
@@ -138,6 +163,31 @@ class ErrorHandler
 	}
 	
 	/**
+	 * Determines if an error should be ignored.
+	 *
+	 * @param array $error_last
+	 * 
+	 * @return boolean 
+	 */
+	private function _shouldIgnoreError($error_last)
+	{
+		if (empty($this->_ignore_messages))
+		{
+			return false;
+		}
+		
+		foreach ($this->_ignore_messages as $message)
+		{
+			if ($message === $error_last['message'])
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * Display a friendly page upon fatal error.
 	 * 
 	 * Useful when we are hiding normal error reporting. If we have an error, we 
@@ -149,13 +199,16 @@ class ErrorHandler
 		
 		if ( ! empty($error_last) )
 		{
-			$log_message = $this->_makeLogMessage('Encountered fatal error: ');
-			$this->_log->writeLogToFile($log_message, 'error', 'errorLog');
+			if ( ! $this->_shouldIgnoreError($error_last) )
+			{
+				$log_message = $this->_makeLogMessage('Encountered fatal error: ');
+				$this->_log->writeLogToFile($log_message, 'error', 'errorLog');
 			
-			$email_message = $this->_makeEmailMessage('Encountered fatal error: ');
-			$this->_sendEmail(DOMAIN_NAME . ' Fatal Error', $email_message);
+				$email_message = $this->_makeEmailMessage('Encountered fatal error: ');
+				$this->_sendEmail(DOMAIN_NAME . ' Fatal Error', $email_message);
 			
-			header('Location:' . ERROR_HANDLER_PAGE_PATH);
+				header('Location:' . ERROR_HANDLER_PAGE_PATH);
+			}			
 		}
 	}
 }
