@@ -43,7 +43,9 @@ final class ApplicationFactory
 	 */
 	public function __construct($storage_type, $has_database)
 	{
-		$this->_setStorageType($storage_type)->_setHasDatabaseValue($has_database);
+		$this
+			->_setStorageType($storage_type)
+			->_setHasDatabaseValue($has_database);
 	}
 	
 	/**
