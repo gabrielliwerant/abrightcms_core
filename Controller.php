@@ -196,17 +196,8 @@ class Controller
 			{
 				$attribute_data = null;
 			}		
-
-			if ((boolean)$data['is_image'])
-			{
-				$href = IMAGES_PATH . '/' . $data['href'];
-			}
-			else
-			{
-				$href = $data['href'];
-			}
 			
-			$links .= $this->_view->buildHeadLink($data['rel'], $href, $attribute_data, $cache_buster);
+			$links .= $this->_view->buildHeadLink($data['rel'], $data['href'], (boolean)$data['is_image'], $attribute_data, $cache_buster);
 		}
 		
 		return $this->_setViewProperty('head_links', $links);
