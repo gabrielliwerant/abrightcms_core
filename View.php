@@ -28,11 +28,42 @@ class View
 	const INCORRECT_DATA_TYPE_FOR_META_TAG	= 1001;
 	
 	/**
-	 * Nothing to see here...
+	 * Store application HTTP root path
+	 *
+	 * @var string $_http_root_path
+	 */
+	protected $_http_root_path;
+	
+	/**
+	 * Store application CSS path
+	 *
+	 * @var string $_css_path
+	 */
+	protected $_css_path;
+	
+	/**
+	 * Store application JavaScript path
+	 *
+	 * @var string $_js_path
+	 */
+	protected $_js_path;
+	
+	/**
+	 * Store application images path
+	 *
+	 * @var string $_images_path
+	 */
+	protected $_images_path;
+	
+	/**
+	 * Set some properties to constants here to help us with refactoring.
 	 */
 	public function __construct()
 	{
-		//
+		$this->_http_root_path = HTTP_ROOT_PATH;
+		$this->_css_path = CSS_PUBLIC_PATH;
+		$this->_js_path = JS_PUBLIC_PATH;
+		$this->_images_path = IMAGES_PATH;
 	}
 	
 	/**
@@ -146,15 +177,19 @@ class View
 	
 	/**
 	 * Build HTML head links from data.
+	 * 
+	 * @todo consider refactoring attribute data to contain all attributes, 
+	 *		which will require re-working json/xml
 	 *
 	 * @param string $rel
 	 * @param string $href
-	 * @param array|void $attribute_data
+	 * @param boolean $is_image Helps us build href
+	 * @param array|void $attribute_data Alternate attributes
 	 * @param string|void $cache_buster
 	 * 
 	 * @return string HTML
 	 */
-	public function buildHeadLink($rel, $href, $attribute_data = null, $cache_buster = null)
+	public function buildHeadLink($rel, $href, $is_image, $attribute_data = null, $cache_buster = null)
 	{
 		$attribute_list = null;
 		
@@ -162,6 +197,8 @@ class View
 		{
 			$attribute_list = ' ' . $this->_buildAttributeList($attribute_data);
 		}
+		
+		$href = $is_image ? IMAGES_PATH . '/' . $href : $href;
 		
 		$link = '<link rel="' . $rel . '" href="' . $href . $cache_buster . '"' . $attribute_list . '/>';
 		
@@ -181,7 +218,7 @@ class View
 	{
 		if ((boolean)$css_data['is_internal'])
 		{			
-			$css = '<link rel="stylesheet" href="' . CSS_PATH . '/' . $name . '.css' . $cache_buster . '" />';
+			$css = '<link rel="stylesheet" href="' . $this->_css_path . '/' . $name . '.css' . $cache_buster . '" />';
 		}
 		else
 		{
@@ -212,7 +249,7 @@ class View
 		{
 			if ( ! empty($js_data['src']))
 			{
-				$src = 'src="' . JS_PATH . '/' . $js_data['src'] . '.js' . $cache_buster . '"';
+				$src = 'src="' . $this->_js_path . '/' . $js_data['src'] . '.js' . $cache_buster . '"';
 			}
 			else
 			{
@@ -301,7 +338,7 @@ class View
 	{
 		if ((boolean)$is_internal)
 		{
-			$href = HTTP_ROOT_PATH . '/' . $path;
+			$href = $this->_http_root_path . '/' . $path;
 		}
 		else
 		{
@@ -386,7 +423,7 @@ class View
 	 */
 	public function buildBrandingLogo($src, $alt, $id = null)
 	{
-		$src = IMAGES_PATH . '/' . $src;
+		$src = $this->_images_path . '/' . $src;
 		
 		// Array to loop through in attribute builder method
 		$img_data['src']	= $src;
@@ -400,9 +437,11 @@ class View
 	}
 	
 	/**
-	 * Calls the body view file for display depending upon the page name.
+	 * Renders the page using the default page setup.
 	 * 
-	 * @param string $page_name The name of the page gathered from the bootstrap
+	 * Override to use a different page structure.
+	 * 
+	 * @param string $page_name Specific view page to load
 	 */
 	public function renderPage($page_name)
 	{
