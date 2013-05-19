@@ -54,6 +54,9 @@ class Loader
 		
 	/**
 	 * Validate that our file path is accurate.
+	 * 
+	 * @deprecated Currently unused, slated for removal unless we need some 
+	 *		fancy validation here aside from the obvious.
 	 *
 	 * @param string $file_path
 	 * 
@@ -183,7 +186,7 @@ class Loader
 		
 		foreach ($file_path_arr as $file_path)
 		{		
-			if (self::_isFilePathValid($file_path))
+			if (file_exists($file_path))
 			{
 				require $file_path;
 				
@@ -240,7 +243,10 @@ class Loader
 	 */
 	public static function _convertFirstCharacterToLowerCase($string)
 	{
-		return strtolower(substr($string, 0, 1)) . substr($string, 1);
+		$lower_first_char = strtolower(substr($string, 0, 1));
+		$all_but_first_char = substr($string, 1);
+		
+		return $lower_first_char . $all_but_first_char;
 	}
 }
 // End of Loader Class
