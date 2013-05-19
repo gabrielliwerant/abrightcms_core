@@ -9,6 +9,6 @@ core classes and dependencies necessary to run the framework.
 
 ## Contact
 
-* Email: gabriel@abrightconcept.com
+* Email: contact@abrightcms.com
 * Twitter: @gabrielliwerant
 * Website: http://abrightcms.com

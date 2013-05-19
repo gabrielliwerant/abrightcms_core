@@ -58,7 +58,7 @@ class Model
 	 *
 	 * @var object $_email
 	 */
-	protected $_email;	
+	protected $_email;
 	
 	/**
 	 * Upon instantiation, we pass all the objects we want our model object to
